@@ -1,0 +1,37 @@
+---
+
+- name: awesome
+  hosts: all
+  become: yes
+  gather_facts: True
+
+  roles:
+    - role: core
+      tags: core
+    - role: awesome
+      tags: awesome
+    - role: user
+      tags: user
+
+  pre_tasks:
+    - name: check requirements
+      block:
+        - name: check ansible version
+          assert:
+            that: ansible_version.full is version_compare('2.10', '>=')
+            fail_msg: "unsupported ansible version: {{ ansible_version }}"
+
+        - name: check supported os
+          assert:
+            that:
+              - ansible_facts['distribution'] == "Ubuntu"
+              - ansible_facts['distribution_major_version'] is version('20', '==')
+            fail_msg: "unsupported os: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+        - name: check architecture
+          assert:
+            that: ansible_architecture == "x86_64"
+            fail_msg: "unsupported architecture: {{ ansible_architecture }}"
+      tags:
+        - always
+

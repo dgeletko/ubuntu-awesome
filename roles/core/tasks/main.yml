@@ -1,0 +1,194 @@
+---
+
+- name: remove server packages
+  apt:
+    update_cache: yes
+    state: absent
+    purge: yes
+    name:
+      - byobu
+      - cloud-init
+      - open-vm-tools
+      - pollinate
+      - popularity-contest
+      - snapd
+      - ubuntu-server
+
+- name: remove server files
+  file:
+    path: '{{item}}'
+    state: absent
+  loop:
+    - /etc/byobu
+    - /etc/cloud
+    - /etc/pollinate
+    - /etc/vmware-tools
+
+- name: install core system packages
+  apt:
+    state: present
+    name:
+      - acpi
+      - acpi-support
+      - alsa-base
+      - anacron
+      - at
+      - automake
+      - bc
+      - bolt
+      - build-essential
+      - ca-certificates
+      - cifs-utils
+      - cpufrequtils
+      - cryptsetup
+      - cryptsetup-initramfs
+      - dbus-x11
+      - desktop-file-utils
+      - dkms
+      - dos2unix
+      - ethtool
+      - fwupd
+      - fwupd-signed
+      - gamemode 
+      - genisoimage 
+      - ghostscript-x
+      - git
+      - gnome-keyring
+      - gvfs
+      - gvfs-backends
+      - gvfs-bin
+      - gvfs-fuse 
+      - htop
+      - inputattach
+      - inxi
+      - kerneloops
+      - laptop-detect
+      - libcanberra-pulse
+      - lvm2
+      - menu
+      - menu-xdg
+      - net-tools
+      - p7zip-full
+      - patch
+      - pavucontrol
+      - pipenv
+      - policykit-1
+      - policykit-desktop-privileges
+      - pulseaudio
+      - pulseaudio-module-bluetooth
+      - python3
+      - python3-pip
+      - python3-setuptools
+      - python3-venv
+      - rfkill
+      - rlwrap
+      - secureboot-db
+      - software-properties-common
+      - tlp
+      - tree
+      - ubuntu-drivers-common
+      #- ubuntu-restricted-addons # necessary? just install codecs as needed
+      - udisks2
+      - unattended-upgrades
+      - unzip
+      - update-notifier-common
+      - vim
+      - virtualenv
+      - wireless-tools 
+      - wpasupplicant 
+      - xdg-user-dirs-gtk
+      - xdg-utils
+      - xorg
+      - xterm
+      - zip 
+
+- name: install core system packages (no recommends)
+  apt:
+    state: present
+    install_recommends: no
+    name:
+      - cups
+      - network-manager # numerous unnecessary packages/plugins
+      - software-properties-gtk # requires session manager
+      - zenity
+
+- name: install plymouth boot splash
+  apt:
+    state: present
+    name:
+      - plymouth
+      - plymouth-theme-ubuntu-logo
+      - plymouth-theme-ubuntu-text
+      - plymouth-theme-spinner
+  notify: update initramfs
+
+- name: autoremove packages
+  apt:
+    autoremove: yes
+
+- name: enable quiet splash in grub
+  block:
+    - name: find quiet splash in grub cmdline
+      command: grep -E '^\s*GRUB_CMDLINE_LINUX(_DEFAULT)?\s*=\s*\".*quiet splash.*"' /etc/default/grub
+      register: grub_quiet_splash
+      ignore_errors: yes
+      failed_when: grub_quiet_splash.rc >= 2
+      changed_when: false
+
+    - name: add quiet splash in grub
+      lineinfile:
+        name: /etc/default/grub
+        regexp: '^\s*GRUB_CMDLINE_LINUX_DEFAULT\s*=\s*"(.*)"'
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash \1"'
+        backrefs: yes
+        state: present
+      when: grub_quiet_splash.rc == 1
+      notify: update grub
+
+- name: configure network manager as netplan renderer
+  block:
+    - name: remove installer netplan config
+      file:
+        path: /etc/netplan/00-installer-config.yaml
+        state: absent
+
+    - name: copy network manager netplan config
+      copy:
+        src: files/netplan/01-network-manager-all.yaml
+        dest: /etc/netplan
+        mode: 0644
+
+    - name: disable systemd network daemon
+      systemd:
+        name: systemd-networkd
+        enabled: no
+
+- name: add i386 multiarch support
+  block:
+    - name: get current foreign architectures
+      command: 'dpkg --print-foreign-architectures'
+      register: dpkg_foreign_archs
+      changed_when: false
+
+    - debug: msg="{{dpkg_foreign_archs.stdout}}"
+
+    - name: add i386 architecture
+      command: 'dpkg --add-architecture i386'
+      when: "'i386' not in dpkg_foreign_archs.stdout"
+      register: dpkg_add_arch
+
+    - name: update apt cache
+      apt:
+        update_cache: yes
+      when: dpkg_add_arch.changed
+
+- name: set timezone
+  timezone:
+    name: America/New_York
+
+- name: create xdg user dirs
+  become: no
+  command: 'xdg-user-dirs-update'
+  args:
+    creates: '~/Desktop'
+

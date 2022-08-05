@@ -1,0 +1,91 @@
+---
+
+- name: install awesome window manager
+  apt:
+    state: present
+    name:
+      - awesome
+      - awesome-extra
+      - lightdm
+      - lightdm-settings
+      - light-locker
+      - light-locker-settings
+      - slick-greeter
+
+- name: install core software
+  apt:
+    state: present
+    name:
+      - arandr
+      - compton
+      - firefox
+      - libnotify-bin # note: depends on gnome shell unless notification daemon installed (awesome, dunst)
+      - lxappearance
+      - lxpolkit
+      - maim # scrot, flameshot, gnome-screenshot
+      - network-manager-gnome # note: depends on gnome shell unless policykit auth agent (lxpolkit) and notification daemon installed (awesome, dunst)
+      - nitrogen
+      - pasystray
+      - pcmanfm
+      - playerctl
+      - ranger
+      - rofi
+      - rxvt-unicode
+      - sxiv
+      - vim
+      #- update-manager # note: depends on gnome shell unless policykit auth agent installed (lxpolkit) (also requires session manager)
+      - xarchiver # engrampa
+
+- name: install core software (no recommends)
+  apt:
+    state: present
+    install_recommends: no
+    name:
+      - kitty # xfce4-terminal
+
+- name: install fonts
+  apt:
+    state: present
+    name:
+      - fonts-fork-awesome
+      - fonts-freefont-ttf 
+      - fonts-firacode
+      - fonts-ubuntu
+      - powerline
+
+- name: install themes
+  apt:
+    state: present
+    name:
+      - arc-theme
+      - dmz-cursor-theme
+      - gtk2-engines
+      - papirus-icon-theme
+      - qt5ct
+      - qt5-gtk-platformtheme
+      - qt5-gtk2-platformtheme
+      - qt5-style-platform-gtk2
+
+- name: configure software
+  become: no
+  block:
+    - name: copy xresources
+      copy:
+        src: files/home/Xresources
+        dest: ~/.Xresources
+
+    - name: copy xresources themes
+      copy:
+        src: files/home/Xresources.d/
+        dest: ~/.Xresources.d
+
+    - name: configure software
+      copy:
+        src: files/home/config/{{item}}
+        dest: ~/.config
+      loop:
+        - awesome
+        - kitty
+        - rofi
+        - ranger
+

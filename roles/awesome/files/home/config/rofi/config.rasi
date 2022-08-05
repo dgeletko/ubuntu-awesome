@@ -1,0 +1,23 @@
+configuration {
+    modi: "window,drun";
+    width: 50;
+    lines: 5;
+    font: "Fira Code Regular 10, forkawesome 10";
+    bw: 0;
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    eh: 1;
+    combi-modi: "window,drun";
+    separator-style: "solid";
+    hide-scrollbar: true;
+    combi-hide-mode-prefix: true;
+    display-drun: "";
+    theme: "nord";
+}
+
+#window {
+    transparency: "real";
+    background-color: #663b4252;
+    border-radius: 8;
+}
+

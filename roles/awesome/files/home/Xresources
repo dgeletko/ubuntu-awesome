@@ -1,0 +1,27 @@
+! font rendering
+xft.dpi: 96
+xft.antialias: true
+xft.hinting: true
+xft.rgba: rgb
+xft.autohint: true
+!xft.hintstyle: hintfull
+xft.hintstyle: hintslight
+xft.lcdfilter: lcdfilter
+
+! font
+*renderFont: true
+*faceName: Fira Code Regular
+*faceSize: 9
+
+! misc
+*termName: xterm-256color
+*saveLines: 5000
+
+! apps
+urxvt*font: xft:Fira Code:size=9:style=Regular
+urxvt*scrollBar_right: true
+urxvt*scrollBar_floating: true
+
+! theme
+#include ".Xresources.d/nord"
+
