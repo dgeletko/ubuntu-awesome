@@ -65,6 +65,7 @@
       - qt5-gtk-platformtheme
       - qt5-gtk2-platformtheme
       - qt5-style-platform-gtk2
+      - ubuntu-wallpapers
 
 - name: configure software
   become_user: '{{user}}'
@@ -99,6 +100,7 @@
       loop:
         - awesome
         - kitty
+        - nitrogen
         - rofi
         - ranger
 
