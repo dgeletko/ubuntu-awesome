@@ -18,7 +18,7 @@
       block:
         - name: check ansible version
           assert:
-            that: ansible_version.full is version_compare('2.10', '>=')
+            that: ansible_version.full is version_compare('2.8', '>=')
             fail_msg: "unsupported ansible version: {{ ansible_version }}"
 
         - name: check supported os
