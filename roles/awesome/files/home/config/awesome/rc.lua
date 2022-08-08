@@ -72,7 +72,7 @@ beautiful.tasklist_disable_task_name = true
 -- apps
 --------------------------------------------------
 
-local terminal = "x-terminal-emulator"
+local terminal = "kitty"
 local editor = os.getenv("EDITOR") or "vim"
 
 local config = {
@@ -161,7 +161,7 @@ local widgets = {
         widget:set_text(" " .. gears.string.linecount(stdout) - 2)
     end),
     kernel = wibox.widget.textbox(),
-    host = wibox.widget.textbox(),
+    --host = wibox.widget.textbox(),
     cpu = wibox.widget.textbox(),
     mem = wibox.widget.textbox(),
     net = wibox.widget.textbox(),
@@ -179,12 +179,12 @@ vicious.register(widgets.kernel, vicious.widgets.os,
     function (widget, args)
         return " " .. args[2]:gsub("-generic", "")
     end, 60)
-vicious.register(widgets.host, vicious.widgets.os, " $4", 60)
+--vicious.register(widgets.host, vicious.widgets.os, " $4", 60)
 vicious.register(widgets.cpu, vicious.widgets.cpu, " $1%")
 vicious.register(widgets.mem, vicious.widgets.mem, " $1%")
 vicious.register(widgets.net, vicious.widgets.wifi, " ${ssid}", 15, "wlo1")
 vicious.register(widgets.battery, vicious.widgets.bat, " $2% $1", 15, "BAT0")
-vicious.register(widgets.disk, vicious.widgets.fs, " / ${/ used_p}%, /home ${/home used_p}%", 10)
+vicious.register(widgets.disk, vicious.widgets.fs, " / ${/ used_p}%", 10)
 --fshomewidget = wibox.widget.textbox()
 --vicious.register(fshomewidget, vicious.widgets.fs, " /home ${/home used_p}%", 20)
 
@@ -471,8 +471,8 @@ awful.screen.connect_for_each_screen(function(s)
             spacing = 8,
             widgets.separator,
             widgets.kernel,
-            widgets.separator,
-            widgets.host,
+            --widgets.separator,
+            --widgets.host,
             widgets.separator,
             widgets.cpu,
             widgets.separator,
