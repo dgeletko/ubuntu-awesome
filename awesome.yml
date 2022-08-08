@@ -5,6 +5,12 @@
   become: yes
   gather_facts: True
 
+  vars_prompt:
+    - name: user
+      prompt: username
+      private: no
+      default: "{{ lookup('env', 'USER') | default('nobody', True) }}"
+
   roles:
     - role: core
       tags: core

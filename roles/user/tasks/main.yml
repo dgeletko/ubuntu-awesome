@@ -102,7 +102,7 @@
       - zathura # atril, evince
 
 - name: install vscode extensions
-  become: no
+  become_user: '{{user}}'
   command: 'code --install-extension {{item}}'
   register: install_vscode_extension
   args:
@@ -115,7 +115,7 @@
     - rust-lang.rust
 
 - name: install latest rust
-  become: no
+  become_user: '{{user}}'
   shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   args:
     creates: ~/.cargo/bin/rustc
@@ -123,12 +123,12 @@
 
 - name: add user groups
   user:
-    name: '{{ansible_env.USER}}'
+    name: '{{user}}'
     append: yes
     groups: [dialout, users, wireshark, docker]
 
 - name: user config
-  become: no
+  become_user: '{{user}}'
   block:
     - name: remove xdg user dirs
       file:

@@ -67,7 +67,7 @@
       - qt5-style-platform-gtk2
 
 - name: configure software
-  become: no
+  become_user: '{{user}}'
   block:
     - name: copy xresources
       copy:
