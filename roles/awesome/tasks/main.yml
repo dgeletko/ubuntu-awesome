@@ -69,6 +69,19 @@
 - name: configure software
   become_user: '{{user}}'
   block:
+    - name: configure gtk2 theme
+      copy:
+        src: files/home/gtkrc-2.0
+        dest: ~/.gtkrc-2.0
+
+    - name: configure gtk3 theme
+      copy:
+        src: files/home/config/gtk-3.0
+        dest: ~/.config
+
+- name: configure software
+  become_user: '{{user}}'
+  block:
     - name: copy xresources
       copy:
         src: files/home/Xresources
