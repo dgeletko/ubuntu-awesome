@@ -1,0 +1,23 @@
+---
+
+- name: add user {{user}}
+  user:
+    state: present
+    name: '{{user}}'
+    password: $6$yKtFi1dWyBmcc$FfeCYh4ZuCcyB7jw3/vLd/1oQsr8R771F/KL.mvg6R1tRrJP8o43CsbyQzqAKbcVmTLWXP86jtBNjh0KO5aB9/
+    groups: [sudo, vboxsf]
+    append: yes
+    create_home: yes
+    shell: /bin/bash
+
+- name: change vagrant user to system account
+  ini_file:
+    path: /var/lib/AccountsService/users/vagrant
+    section: User
+    option: SystemAccount
+    value: "true"
+    state: present
+    no_extra_spaces: yes
+  notify: restart lightdm
+  when: vagrant is defined and vagrant | bool
+

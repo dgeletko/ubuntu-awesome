@@ -28,6 +28,7 @@
   apt:
     state: present
     name:
+      - acl
       - acpi
       - acpi-support
       - alsa-base
