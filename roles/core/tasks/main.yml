@@ -7,11 +7,15 @@
     purge: yes
     name:
       - byobu
-      - cloud-init
+      - cloud-guest-utils
+      - cloud-init*
+      - landscape-*
+      - lxd-agent-loader
+      #- needrestart
       - open-vm-tools
       - pollinate
       - popularity-contest
-      - snapd
+      #- snapd - required now for firefox
       - ubuntu-server
 
 - name: remove server files
@@ -23,6 +27,12 @@
     - /etc/cloud
     - /etc/pollinate
     - /etc/vmware-tools
+
+- name: remove snap packages
+  snap:
+    state: absent
+    name:
+      - lxd
 
 - name: install core system packages
   apt:
