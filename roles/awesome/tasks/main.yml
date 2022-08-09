@@ -17,7 +17,7 @@
     state: present
     name:
       - arandr
-      - compton
+      - picom # compton
       - firefox
       - libnotify-bin # note: depends on gnome shell unless notification daemon installed (awesome, dunst)
       - lxappearance
@@ -62,10 +62,18 @@
       - gtk2-engines
       - papirus-icon-theme
       - qt5ct
+      - qt6-gtk-platformtheme
       - qt5-gtk-platformtheme
       - qt5-gtk2-platformtheme
-      - qt5-style-platform-gtk2
       - ubuntu-wallpapers
+
+- name: install themes (no recommends)
+  apt:
+    state: present
+    install_recommends: no
+    name:
+      - qt5-style-kvantum
+      - qt5-style-kvantum-themes
 
 - name: configure software
   become_user: '{{user}}'

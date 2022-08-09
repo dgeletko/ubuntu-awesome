@@ -45,6 +45,7 @@
       - anacron
       - at
       - automake
+      - bash-completion
       - bc
       - bolt
       - build-essential
@@ -67,7 +68,6 @@
       - gnome-keyring
       - gvfs
       - gvfs-backends
-      - gvfs-bin
       - gvfs-fuse 
       - htop
       - inputattach
@@ -75,6 +75,7 @@
       - kerneloops
       - laptop-detect
       - libcanberra-pulse
+      - libglib2.0-bin
       - lvm2
       - menu
       - menu-xdg
