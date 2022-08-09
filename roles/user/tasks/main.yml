@@ -8,7 +8,7 @@
         state: present
     - name: add virtualbox repo
       apt_repository:
-        repo: deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian focal contrib
+        repo: deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian jammy contrib
         state: present
         filename: virtualbox
 
