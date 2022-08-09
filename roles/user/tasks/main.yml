@@ -181,7 +181,7 @@
       command: vim -E -s -u ~/.vimrc -c PlugInstall -c qa
       when: vimrc.changed
       register: install_vim_plugins
-      failed_when: install_vim_plugins.rc != 1 # not sure why this returns error code
+      failed_when: install_vim_plugins.rc != 0
 
     - name: config tmux
       copy:
