@@ -1,6 +1,6 @@
 ---
 
-- name: awesome
+- name: ubuntu
   hosts: all
   become: yes
   gather_facts: True
@@ -10,6 +10,14 @@
       prompt: username
       private: no
       default: "{{ lookup('env', 'USER') | default('nobody', True) }}"
+    #- name: awesomewm
+    #  prompt: install awesomewm?
+    #  private: no
+    #  default: yes
+    #- name: qtile
+    #  prompt: install qtile?
+    #  private: no
+    #  default: yes
 
   roles:
     - role: vbox
@@ -19,8 +27,8 @@
         - ansible_facts["virtualization_type"] == "virtualbox"
     - role: core
       tags: core
-    - role: awesome
-      tags: awesome
+    - role: standard
+      tags: standard
     - role: user
       tags: user
 

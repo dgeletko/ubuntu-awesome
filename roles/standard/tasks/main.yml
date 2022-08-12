@@ -1,16 +1,26 @@
 ---
 
-- name: install awesome window manager
+- name: install login manager
   apt:
     state: present
     name:
-      - awesome
-      - awesome-extra
       - lightdm
       - lightdm-settings
       - light-locker
       - light-locker-settings
       - slick-greeter
+
+- name: install awesomewm
+  import_tasks: awesome.yml
+  #when: awesomewm | bool
+  tags: awesomewm
+  notify: restart lightdm
+
+#- name: install qtile
+#  import_tasks: qtile.yml
+#  #when: qtile | bool
+#  tags: qtile
+#  notify: restart lightdm
 
 - name: install core software
   apt:
