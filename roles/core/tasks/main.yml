@@ -84,10 +84,12 @@
       - patch
       - pavucontrol
       - pipenv
+      - pkg-config
       - policykit-1
       - policykit-desktop-privileges
       - pulseaudio
       - pulseaudio-module-bluetooth
+      - python-is-python3
       - python3
       - python3-pip
       - python3-setuptools
