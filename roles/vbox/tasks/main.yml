@@ -18,6 +18,5 @@
     value: "true"
     state: present
     no_extra_spaces: yes
-  notify: restart lightdm
   when: vagrant is defined and vagrant | bool
 
