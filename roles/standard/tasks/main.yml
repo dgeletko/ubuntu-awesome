@@ -16,11 +16,11 @@
   tags: awesomewm
   notify: restart lightdm
 
-#- name: install qtile
-#  import_tasks: qtile.yml
-#  #when: qtile | bool
-#  tags: qtile
-#  notify: restart lightdm
+- name: install qtile
+  import_tasks: qtile.yml
+  #when: qtile | bool
+  tags: qtile
+  notify: restart lightdm
 
 - name: install core software
   apt:
