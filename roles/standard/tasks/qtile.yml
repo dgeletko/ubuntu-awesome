@@ -1,0 +1,62 @@
+---
+
+- name: clone qtile source repo
+  git:
+    repo: https://github.com/qtile/qtile.git
+    dest: /opt/qtile
+    version: v0.21.0
+
+- name: install qtile dependencies
+  block:
+    - name: install qtile dependency packages
+      apt:
+        state: present
+        name:
+          - libpangocairo-1.0-0
+          - python3-cairocffi
+          - python3-cffi
+          - python3-xcffib
+
+    - name: setup qtile virtualenv and install dependency pip packages
+      pip:
+        state: present
+        name:
+          - dbus-next
+          - wheel
+        chdir: /opt/qtile
+        virtualenv: venv
+        virtualenv_command: python3 -m venv
+        virtualenv_site_packages: yes
+
+- name: install qtile
+  pip:
+    state: present
+    editable: yes
+    name: .
+    chdir: /opt/qtile
+    virtualenv: venv
+    virtualenv_command: python3 -m venv venv
+
+- name: install qtile launcher script
+  copy:
+    src: files/opt/qtile/qtile.sh
+    dest: /opt/qtile
+    mode: '0755'
+
+- name: install qtile xsession launcher
+  copy:
+    src: files/usr/share/xsessions/qtile.desktop
+    dest: /usr/share/xsessions
+    mode: '0644'
+
+#- name: configure qtile
+#  become_user: '{{user}}'
+#  copy:
+#    src: files/home/config/qtile
+#    dest: ~/.config
+- name: configure qtile
+  become_user: '{{user}}'
+  copy:
+    src: /opt/qtile/libqtile/resources/default_config.py
+    dest: ~/.config/qtile/config.py
+

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Qtile
+Comment=Qtile Session
+Exec=/opt/qtile/qtile.sh
+Type=Application
+Icon=/usr/share/pixmaps/awesome.xpm
+Keywords=Window manager
