@@ -2,8 +2,8 @@
 
 - name: ubuntu
   hosts: all
-  become: yes
-  gather_facts: True
+  become: true
+  gather_facts: true
 
   vars_prompt:
     - name: user
@@ -18,8 +18,8 @@
         - ansible_virtualization_role == "guest"
         - ansible_virtualization_type == "virtualbox"
         - vagrant | bool
-    #- role: core
-    #  tags: core
+    - role: core
+      tags: core
     #- role: standard
     #  tags: standard
     #- role: user
