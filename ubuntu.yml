@@ -9,28 +9,21 @@
     - name: user
       prompt: username
       private: no
-      default: "{{ lookup('env', 'USER') | default('nobody', True) }}"
-    #- name: awesomewm
-    #  prompt: install awesomewm?
-    #  private: no
-    #  default: yes
-    #- name: qtile
-    #  prompt: install qtile?
-    #  private: no
-    #  default: yes
+      default: "{{lookup('env', 'USER') | default('nobody', True)}}"
 
   roles:
     - role: vbox
       tags: vbox
       when:
-        - ansible_facts["virtualization_role"] == "guest"
-        - ansible_facts["virtualization_type"] == "virtualbox"
-    - role: core
-      tags: core
-    - role: standard
-      tags: standard
-    - role: user
-      tags: user
+        - ansible_virtualization_role == "guest"
+        - ansible_virtualization_type == "virtualbox"
+        - vagrant | bool
+    #- role: core
+    #  tags: core
+    #- role: standard
+    #  tags: standard
+    #- role: user
+    #  tags: user
 
   pre_tasks:
     - name: check requirements
@@ -38,14 +31,14 @@
         - name: check ansible version
           assert:
             that: ansible_version.full is version_compare('2.10', '>=')
-            fail_msg: "unsupported ansible version: {{ ansible_version }}"
+            fail_msg: "unsupported ansible version: {{ansible_version}}"
 
         - name: check supported os
           assert:
             that:
-              - ansible_facts['distribution'] == "Ubuntu"
-              - ansible_facts['distribution_major_version'] is version('22', '==')
-            fail_msg: "unsupported os: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+              - ansible_distribution == "Ubuntu"
+              - ansible_distribution_major_version is version('22', '==')
+            fail_msg: "unsupported os: {{ansible_distribution}} {{ansible_distribution_version}}"
 
         - name: check architecture
           assert:
