@@ -12,15 +12,13 @@
 
 - name: install awesomewm
   import_tasks: awesome.yml
-  #when: awesomewm | bool
   tags: awesomewm
   notify: restart lightdm
 
-- name: install qtile
-  import_tasks: qtile.yml
-  #when: qtile | bool
-  tags: qtile
-  notify: restart lightdm
+#- name: install qtile
+#  import_tasks: qtile.yml
+#  tags: qtile
+#  notify: restart lightdm
 
 - name: install core software
   apt:
@@ -49,7 +47,7 @@
 - name: install core software (no recommends)
   apt:
     state: present
-    install_recommends: no
+    install_recommends: false
     name:
       - kitty # xfce4-terminal
 
@@ -72,20 +70,20 @@
       - gtk2-engines
       - papirus-icon-theme
       - qt5ct
-      - qt6-gtk-platformtheme
       - qt5-gtk-platformtheme
       - qt5-gtk2-platformtheme
+      - qt6-gtk-platformtheme
       - ubuntu-wallpapers
 
 - name: install themes (no recommends)
   apt:
     state: present
-    install_recommends: no
+    install_recommends: false
     name:
       - qt5-style-kvantum
       - qt5-style-kvantum-themes
 
-- name: configure software
+- name: configure gtk theme
   become_user: '{{user}}'
   block:
     - name: configure gtk2 theme
