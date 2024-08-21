@@ -22,8 +22,8 @@
       tags: core
     - role: standard
       tags: standard
-    #- role: user
-    #  tags: user
+    - role: user
+      tags: user
 
   pre_tasks:
     - name: check requirements

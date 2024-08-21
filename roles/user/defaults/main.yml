@@ -1,0 +1,27 @@
+---
+
+repos:
+  - name: google-chrome
+    repo: https://dl.google.com/linux/chrome/deb stable main
+    key:
+      url: https://dl.google.com/linux/linux_signing_key.pub
+      dest: google.asc
+
+  - name: brave-browser
+    repo: https://brave-browser-apt-release.s3.brave.com stable main
+    key:
+      url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+      dest: brave-browser-archive-keyring.gpg
+
+  - name: virtualbox
+    repo: https://download.virtualbox.org/virtualbox/debian {{ansible_facts['distribution_release']}} contrib
+    key:
+      url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+      dest: oracle_vbox_2016.asc
+
+  - name: vscode
+    repo: https://packages.microsoft.com/repos/code stable main
+    key:
+      url: https://packages.microsoft.com/keys/microsoft.asc
+      dest: microsoft.asc
+

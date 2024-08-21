@@ -1,46 +1,25 @@
 ---
 
-- name: add apt repos
+- name: add additional apt repos
+  vars:
+    keyring: /usr/share/keyrings
   block:
-    - name: add virtualbox key
-      apt_key:
-        url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
-        state: present
-    - name: add virtualbox repo
-      apt_repository:
-        repo: deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian jammy contrib
-        state: present
-        filename: virtualbox
+    - name: add repo key
+      get_url:
+        url: '{{item.key.url}}'
+        dest: '{{keyring}}/{{item.key.dest}}'
+      loop: '{{repos}}'
+      loop_control:
+        label: '{{item.name}}'
 
-    - name: add microsoft key
-      apt_key:
-        url: https://packages.microsoft.com/keys/microsoft.asc
-        state: present
-    - name: add vscode repo
+    - name: add repo
       apt_repository:
-        repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+        repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
         state: present
-        filename: vscode
-
-    - name: add google key
-      apt_key:
-        url: https://dl.google.com/linux/linux_signing_key.pub
-        state: present
-    - name: add google chrome repo
-      apt_repository:
-        repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb stable main
-        state: present
-        filename: google-chrome
-
-    - name: add brave browser key
-      apt_key:
-        url: https://brave-browser-apt-release.s3.brave.com/brave-core.asc
-        state: present
-    - name: add brave browser repo
-      apt_repository:
-        repo: deb [arch=amd64] http://brave-browser-apt-release.s3.brave.com stable main
-        state: present
-        filename: brave-browser-release
+        filename: '{{item.name}}'
+      loop: '{{repos}}'
+      loop_control:
+        label: '{{item.name}}'
 
 - name: allow wireshark to run non-root # must be set prior to installing package
   debconf:
@@ -49,28 +28,54 @@
     value: 'true'
     vtype: select
 
-- name: install user packages
+- name: install core dev tools
   package:
     state: present
-    update_cache: yes
     name:
-      - brave-browser # google-chrome-stable
-      - celluloid # parole
+      - ansible
+      - build-essential
       - cmake
       - code
-      - deja-dup # gtk3
+      - cppcheck
+      - curl
       - docker.io
-      - font-manager
+      - docker-buildx
+      - docker-compose-v2
+      - dos2unix
       - gdb-multiarch
-      - ghex
-      - gimp # no install recommends?
       - git
+      - git-completion
       - git-gui
       - git-lfs
       - gitk
-      #- gnome-disk-utility # gtk3 (gparted)
-      #- gnome-firmware # gtk3
+      - lcov
+      - make
+      #- nemiver
+      - netcat
+      - rlwrap
+      - socat
+      - tcpdump
+      - vagrant
+      - valgrind
+      - wget
+
+- name: install user packages
+  package:
+    state: present
+    name:
+      - autojump
+      - brave-browser # google-chrome-stable
+      - celluloid # parole
+      - deja-dup # gtk3
+      - font-manager
+      - fzf
+      - ghex
+      - gimp # no install recommends?
+      - gnome-disk-utility # gtk3 (gparted)
+      - gnome-firmware # gtk3
+      - gpicview # ristretto, eom
       - gtkterm
+      - htop
       - keepassxc
       - libreoffice-calc
       - libreoffice-gtk3
@@ -81,24 +86,28 @@
       - libsdl-ttf2.0-0 # vbox
       - mate-calc # galculator
       - meld
-      #- mousepad # pluma
+      - mousepad # pluma
       - ncdu # baobab (gtk3), ducs
-      #- nemiver
       - neofetch
       - pdfgrep
+      - pipx
+      - python3
+      - python3-pip
+      - python3-psutil # ansible dconf module
+      - python3-setuptools
+      - python3-venv
       #- qt5-default
       #- redshift-gtk
       #- remmina
       #- remmina-plugin-rdp
       #- audacious, lxmusic, lollypop, cmus, moc
-      - gpicview # ristretto, eom
-      - sqlite3
       - tmux
+      - tree
       - usb-creator-gtk
-      - valgrind
       - vim
-      - virtualbox-6.1
+      - virtualbox-7.0
       - wireshark
+      - xterm
       - zathura # atril, evince
 
 - name: install vscode extensions
@@ -109,23 +118,32 @@
     creates: '~/.vscode/extensions/{{item}}-*'
   loop:
     - ms-vscode.cpptools
+    - ms-vscode.makefile-tools
+    - ms-vscode.cmake-tools
+    - ms-vscode-remote.remote-containers
+    - ms-vscode.hexeditor
     - ms-python.python
+    - ms-python.debugpy
     - ms-azuretools.vscode-docker
+    - rust-lang.rust-analyzer
     - redhat.ansible
-    - rust-lang.rust
+    - vscode-icons-team.vscode-icons
 
 - name: install latest rust
   become_user: '{{user}}'
-  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  args:
+  shell:
+    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
-    warn: false
 
 - name: add user groups
   user:
     name: '{{user}}'
-    append: yes
-    groups: [dialout, users, wireshark, docker]
+    append: true
+    groups:
+      - dialout
+      - users
+      - wireshark
+      - docker
 
 - name: user config
   become_user: '{{user}}'
@@ -148,57 +166,4 @@
         path: ~/.bashrc
         block: "{{lookup('file', 'files/home/bashrc')}}"
         insertafter: EOF
-
-    - name: config git
-      copy:
-        src: 'files/home/{{item}}'
-        dest: '~/.{{item}}'
-        mode: 0644
-      loop:
-        - gitconfig
-        - gitignore
-
-    - name: config vimrc
-      copy:
-        src: files/home/vimrc
-        dest: ~/.vimrc
-        mode: 0644
-      register: vimrc
-
-    - name: create vim user dir
-      file:
-          path: '~/.vim'
-          state: directory
-          mode: 0755
-
-    - name: clone vim plug
-      git:
-        clone: yes
-        repo: https://github.com/junegunn/vim-plug.git
-        dest: ~/.vim/vim-plug/autoload
-
-    - name: install vim plugins
-      command: vim -E -s -u ~/.vimrc -c PlugInstall -c qa
-      when: vimrc.changed
-      register: install_vim_plugins
-      failed_when: install_vim_plugins.rc != 0
-
-    - name: config tmux
-      copy:
-        src: files/home/tmux.conf
-        dest: ~/.tmux.conf
-        mode: 0644
-
-    - name: clone tmux themepack
-      git:
-        clone: yes
-        version: 1.1.0
-        repo: https://github.com/jimeh/tmux-themepack.git
-        dest: ~/.tmux/tmux-themepack
-
-    - name: config conky
-      copy:
-        src: files/home/conkyrc
-        dest: ~/.conkyrc
-        mode: 0644
 
