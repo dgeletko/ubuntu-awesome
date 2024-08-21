@@ -145,6 +145,27 @@
       - wireshark
       - docker
 
+- name: install nerd fonts
+  become_user: '{{user}}'
+  vars:
+    fonts_dir: ~/.local/share/fonts
+  block:
+    - name: create local fonts directory
+      file:
+        path: '{{fonts_dir}}'
+        state: directory
+
+    - name: install nerd fonts
+      unarchive:
+        src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{item.pkg}}.zip
+        dest: '{{fonts_dir}}'
+        include: '{{item.name}}*.ttf'
+        creates: '{{fonts_dir}}/{{item.name}}*.ttf'
+        remote_src: true
+      loop: '{{nerd_fonts}}'
+      loop_control:
+        label: '{{item.name}}'
+
 - name: user config
   become_user: '{{user}}'
   block:

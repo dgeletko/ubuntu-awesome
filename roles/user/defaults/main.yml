@@ -25,3 +25,11 @@ repos:
       url: https://packages.microsoft.com/keys/microsoft.asc
       dest: microsoft.asc
 
+nerd_fonts:
+  - name: FiraCode
+    pkg: FiraCode
+  #- name: JetBrainsMono
+  #  pkg: JetBrainsMono
+  #- name: SauceCodePro
+  #  pkg: SourceCodePro
+
