@@ -15,8 +15,8 @@
     - role: vbox
       tags: vbox
       when:
-        - ansible_virtualization_role == "guest"
-        - ansible_virtualization_type == "virtualbox"
+        - ansible_facts['virtualization_role'] == "guest"
+        - ansible_facts['virtualization_type'] == "virtualbox"
         - vagrant | bool
     - role: core
       tags: core
@@ -30,20 +30,20 @@
       block:
         - name: check ansible version
           assert:
-            that: ansible_version.full is version_compare('2.10', '>=')
+            that: ansible_version.full is version('2.10', '>=')
             fail_msg: "unsupported ansible version: {{ansible_version}}"
 
         - name: check supported os
           assert:
             that:
-              - ansible_distribution == "Ubuntu"
-              - ansible_distribution_major_version is version('22', '==')
-            fail_msg: "unsupported os: {{ansible_distribution}} {{ansible_distribution_version}}"
+              - ansible_facts['distribution'] == "Ubuntu"
+              - ansible_facts['distribution_major_version'] is version('22', '==')
+            fail_msg: "unsupported os: {{ansible_facts['distribution']}} {{ansible_facts['distribution_version']}}"
 
         - name: check architecture
           assert:
-            that: ansible_architecture == "x86_64"
-            fail_msg: "unsupported architecture: {{ ansible_architecture }}"
+            that: ansible_facts['architecture'] == "x86_64"
+            fail_msg: "unsupported architecture: {{ansible_facts['architecture']}}"
       tags:
         - always
 
