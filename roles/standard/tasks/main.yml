@@ -55,11 +55,8 @@
   ansible.builtin.apt:
     state: present
     name:
-      - fonts-fork-awesome
       - fonts-freefont-ttf 
-      - fonts-firacode
       - fonts-ubuntu
-      - fonts-ubuntu-console
       - powerline
 
 - name: install themes
