@@ -28,6 +28,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             user: "ubuntu",
             vagrant: true
         }
+        #ansible.tags = ["user"]
+        ansible.skip_tags = []
+        ansible.verbose = false
     end
 end
 
