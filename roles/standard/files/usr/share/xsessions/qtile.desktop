@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Qtile
 Comment=Qtile Session
-Exec=/opt/qtile/qtile.sh
+Exec=/opt/qtile/venv/bin/qtile start
 Type=Application
-Icon=/usr/share/pixmaps/awesome.xpm
+Icon=/opt/qtile/logo.png
 Keywords=Window manager

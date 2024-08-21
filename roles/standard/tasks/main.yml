@@ -15,10 +15,10 @@
   tags: awesomewm
   notify: restart lightdm
 
-#- name: install qtile
-#  import_tasks: qtile.yml
-#  tags: qtile
-#  notify: restart lightdm
+- name: install qtile
+  import_tasks: qtile.yml
+  tags: qtile
+  notify: restart lightdm
 
 - name: install core software
   apt:
@@ -26,7 +26,7 @@
     name:
       - arandr
       - picom # compton
-      - firefox
+        #- firefox # note: snap
       - libnotify-bin # note: depends on gnome shell unless notification daemon installed (awesome, dunst)
       - lxappearance
       - lxpolkit
@@ -49,7 +49,7 @@
     state: present
     install_recommends: false
     name:
-      - kitty # xfce4-terminal
+      - kitty
 
 - name: install fonts
   apt:
@@ -95,28 +95,4 @@
       copy:
         src: files/home/config/gtk-3.0
         dest: ~/.config
-
-- name: configure software
-  become_user: '{{user}}'
-  block:
-    - name: copy xresources
-      copy:
-        src: files/home/Xresources
-        dest: ~/.Xresources
-
-    - name: copy xresources themes
-      copy:
-        src: files/home/Xresources.d/
-        dest: ~/.Xresources.d
-
-    - name: configure software
-      copy:
-        src: files/home/config/{{item}}
-        dest: ~/.config
-      loop:
-        - awesome
-        - kitty
-        - nitrogen
-        - rofi
-        - ranger
 

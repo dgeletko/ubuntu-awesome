@@ -7,9 +7,3 @@
       - awesome
       - awesome-extra
 
-- name: configure awesomewm
-  become_user: '{{user}}'
-  copy:
-    src: files/home/config/awesome
-    dest: ~/.config
-

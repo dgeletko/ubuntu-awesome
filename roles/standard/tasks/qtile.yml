@@ -4,11 +4,11 @@
   git:
     repo: https://github.com/qtile/qtile.git
     dest: /opt/qtile
-    version: v0.21.0
+    version: v0.28.0
 
 - name: install qtile dependencies
   block:
-    - name: install qtile dependency packages
+    - name: install qtile host dependencies
       apt:
         state: present
         name:
@@ -17,46 +17,37 @@
           - python3-cffi
           - python3-xcffib
 
-    - name: setup qtile virtualenv and install dependency pip packages
+    - name: setup qtile virtualenv and update tools
+      pip:
+        state: latest
+        name:
+          - pip
+          - setuptools
+          - wheel
+        virtualenv: /opt/qtile/venv
+        virtualenv_command: python3 -m venv
+        virtualenv_site_packages: true
+
+    - name: install qtile venv dependencies
       pip:
         state: present
         name:
           - dbus-next
-          - wheel
-        chdir: /opt/qtile
-        virtualenv: venv
+        virtualenv: /opt/qtile/venv
         virtualenv_command: python3 -m venv
-        virtualenv_site_packages: yes
+        virtualenv_site_packages: true
 
 - name: install qtile
   pip:
     state: present
-    editable: yes
-    name: .
-    chdir: /opt/qtile
-    virtualenv: venv
-    virtualenv_command: python3 -m venv venv
-
-- name: install qtile launcher script
-  copy:
-    src: files/opt/qtile/qtile.sh
-    dest: /opt/qtile
-    mode: '0755'
+    editable: true
+    name: /opt/qtile
+    virtualenv: /opt/qtile/venv
+    virtualenv_command: python3 -m venv
 
 - name: install qtile xsession launcher
   copy:
     src: files/usr/share/xsessions/qtile.desktop
     dest: /usr/share/xsessions
     mode: '0644'
-
-#- name: configure qtile
-#  become_user: '{{user}}'
-#  copy:
-#    src: files/home/config/qtile
-#    dest: ~/.config
-- name: configure qtile
-  become_user: '{{user}}'
-  copy:
-    src: /opt/qtile/libqtile/resources/default_config.py
-    dest: ~/.config/qtile/config.py
 
