@@ -1,7 +1,7 @@
 ---
 
 - name: remove server packages
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     state: absent
     purge: true
@@ -22,7 +22,7 @@
       - ubuntu-server
 
 - name: remove server files
-  file:
+  ansible.builtin.file:
     path: '{{item}}'
     state: absent
   loop:
@@ -32,13 +32,13 @@
     - /etc/vmware-tools
 
 - name: install updates
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     upgrade: dist
     autoremove: true
 
 - name: install core system packages
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - acl
@@ -120,7 +120,7 @@
       - zip 
 
 - name: install core system packages (no recommends)
-  apt:
+  ansible.builtin.apt:
     state: present
     install_recommends: false
     name:
@@ -130,7 +130,7 @@
       - zenity
 
 - name: install plymouth boot splash
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - plymouth
@@ -142,14 +142,14 @@
 - name: enable quiet splash in grub
   block:
     - name: find quiet splash in grub cmdline
-      command: grep -E '^\s*GRUB_CMDLINE_LINUX(_DEFAULT)?\s*=\s*\".*quiet splash.*"' /etc/default/grub
+      ansible.builtin.command: grep -E '^\s*GRUB_CMDLINE_LINUX(_DEFAULT)?\s*=\s*\".*quiet splash.*"' /etc/default/grub
       register: grub_quiet_splash
       ignore_errors: true
       failed_when: grub_quiet_splash.rc >= 2
       changed_when: false
 
     - name: add quiet splash in grub
-      lineinfile:
+      ansible.builtin.lineinfile:
         name: /etc/default/grub
         regexp: '^\s*GRUB_CMDLINE_LINUX_DEFAULT\s*=\s*"(.*)"'
         line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash \1"'
@@ -159,13 +159,13 @@
       notify: update grub
 
 - name: set timezone
-  timezone:
+  community.general.timezone:
     name: America/New_York
 
 - name: configure network manager as netplan renderer
   block:
     - name: remove installer netplan config
-      file:
+      ansible.builtin.file:
         path: '{{item}}'
         state: absent
       with_fileglob:
@@ -173,38 +173,38 @@
       when: item | basename != '01-network-manager-all.yaml'
 
     - name: copy network manager netplan config
-      copy:
+      ansible.builtin.copy:
         src: files/etc/netplan/01-network-manager-all.yaml
         dest: /etc/netplan
         mode: 0644
 
     - name: disable systemd network daemon
-      systemd:
+      ansible.builtin.systemd_service:
         name: systemd-networkd
         enabled: false
 
 - name: add i386 multiarch support
   block:
     - name: get current foreign architectures
-      command: 'dpkg --print-foreign-architectures'
+      ansible.builtin.command: 'dpkg --print-foreign-architectures'
       register: dpkg_foreign_archs
       changed_when: false
 
     - debug: msg="{{dpkg_foreign_archs.stdout}}"
 
     - name: add i386 architecture
-      command: 'dpkg --add-architecture i386'
+      ansible.builtin.command: 'dpkg --add-architecture i386'
       when: "'i386' not in dpkg_foreign_archs.stdout"
       register: dpkg_add_arch
 
     - name: update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: true
       when: dpkg_add_arch.changed
 
 - name: create xdg user dirs
   become_user: '{{user}}'
-  command: 'xdg-user-dirs-update'
+  ansible.builtin.command: 'xdg-user-dirs-update'
   args:
     creates: '~/Desktop'
 

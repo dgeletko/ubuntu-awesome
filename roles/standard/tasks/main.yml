@@ -1,7 +1,7 @@
 ---
 
 - name: install login manager
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - lightdm
@@ -11,17 +11,17 @@
       - slick-greeter
 
 - name: install awesomewm
-  import_tasks: awesome.yml
+  ansible.builtin.import_tasks: awesome.yml
   tags: awesomewm
   notify: restart lightdm
 
 - name: install qtile
-  import_tasks: qtile.yml
+  ansible.builtin.import_tasks: qtile.yml
   tags: qtile
   notify: restart lightdm
 
 - name: install core software
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - arandr
@@ -45,14 +45,14 @@
       - xarchiver # engrampa
 
 - name: install core software (no recommends)
-  apt:
+  ansible.builtin.apt:
     state: present
     install_recommends: false
     name:
       - kitty
 
 - name: install fonts
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - fonts-fork-awesome
@@ -63,7 +63,7 @@
       - powerline
 
 - name: install themes
-  apt:
+  ansible.builtin.apt:
     state: present
     name:
       - arc-theme
@@ -77,7 +77,7 @@
       - ubuntu-wallpapers
 
 - name: install themes (no recommends)
-  apt:
+  ansible.builtin.apt:
     state: present
     install_recommends: false
     name:
@@ -88,12 +88,12 @@
   become_user: '{{user}}'
   block:
     - name: configure gtk2 theme
-      copy:
+      ansible.builtin.copy:
         src: files/home/gtkrc-2.0
         dest: ~/.gtkrc-2.0
 
     - name: configure gtk3 theme
-      copy:
+      ansible.builtin.copy:
         src: files/home/config/gtk-3.0
         dest: ~/.config
 

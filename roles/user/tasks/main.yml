@@ -5,7 +5,7 @@
     keyring: /usr/share/keyrings
   block:
     - name: add repo key
-      get_url:
+      ansible.builtin.get_url:
         url: '{{item.key.url}}'
         dest: '{{keyring}}/{{item.key.dest}}'
       loop: '{{repos}}'
@@ -13,7 +13,7 @@
         label: '{{item.name}}'
 
     - name: add repo
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
         state: present
         filename: '{{item.name}}'
@@ -22,14 +22,14 @@
         label: '{{item.name}}'
 
 - name: allow wireshark to run non-root # must be set prior to installing package
-  debconf:
+  ansible.builtin.debconf:
     name: wireshark-common
     question: wireshark-common/install-setuid
     value: 'true'
     vtype: select
 
 - name: install core dev tools
-  package:
+  ansible.builtin.apt:
     state: present
     name:
       - ansible
@@ -60,7 +60,7 @@
       - wget
 
 - name: install user packages
-  package:
+  ansible.builtin.apt:
     state: present
     name:
       - autojump
@@ -112,7 +112,7 @@
 
 - name: install vscode extensions
   become_user: '{{user}}'
-  command: 'code --install-extension {{item}}'
+  ansible.builtin.command: 'code --install-extension {{item}}'
   register: install_vscode_extension
   args:
     creates: '~/.vscode/extensions/{{item}}-*'
@@ -131,12 +131,12 @@
 
 - name: install latest rust
   become_user: '{{user}}'
-  shell:
+  ansible.builtin.shell:
     cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
 
 - name: add user groups
-  user:
+  ansible.builtin.user:
     name: '{{user}}'
     append: true
     groups:
@@ -151,12 +151,12 @@
     fonts_dir: ~/.local/share/fonts
   block:
     - name: create local fonts directory
-      file:
+      ansible.builtin.file:
         path: '{{fonts_dir}}'
         state: directory
 
     - name: install nerd fonts
-      unarchive:
+      ansible.builtin.unarchive:
         src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{item.pkg}}.zip
         dest: '{{fonts_dir}}'
         include: '{{item.name}}*.ttf'
@@ -170,20 +170,20 @@
   become_user: '{{user}}'
   block:
     - name: remove xdg user dirs
-      file:
-          path: '~/{{item}}'
-          state: absent
+      ansible.builtin.file:
+        path: '~/{{item}}'
+        state: absent
       loop:
         - Templates
         - Public
       register: xdg_user_dirs
 
     - name: update xdg user dirs
-      command: xdg-user-dirs-update
+      ansible.builtin.command: xdg-user-dirs-update
       when: xdg_user_dirs.changed
 
     - name: config bashrc
-      blockinfile:
+      ansible.builtin.blockinfile:
         path: ~/.bashrc
         block: "{{lookup('file', 'files/home/bashrc')}}"
         insertafter: EOF
