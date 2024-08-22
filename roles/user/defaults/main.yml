@@ -33,3 +33,18 @@ nerd_fonts:
   #- name: SauceCodePro
   #  pkg: SourceCodePro
 
+dotfiles:
+  repo: https://github.com/dgeletko/dotfiles.git
+  dest: /home/{{user}}/src/dotfiles
+  pkgs:
+    - awesome
+    - kitty
+    - nvim
+    - picom
+    - qtile
+    - ranger
+    - rofi
+    - tmux
+    - vim
+    - Xresources
+

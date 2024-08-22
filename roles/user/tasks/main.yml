@@ -101,6 +101,7 @@
       #- remmina
       #- remmina-plugin-rdp
       #- audacious, lxmusic, lollypop, cmus, moc
+      - stow
       - tmux
       - tree
       - usb-creator-gtk
@@ -201,4 +202,23 @@
       ansible.builtin.copy:
         src: files/home/config/gtk-3.0
         dest: ~/.config
+
+- name: dotfiles
+  become_user: '{{user}}'
+  block:
+    - name: clone dotfiles repo
+      ansible.builtin.git:
+        repo: '{{dotfiles.repo}}'
+        dest: '{{dotfiles.dest}}'
+        key_file: '{{dotfiles.key | default(omit)}}'
+        update: false
+        force: false
+
+    - name: install dotfile
+      ansible.builtin.command:
+        cmd: stow --dir={{dotfiles.dest}} --target=/home/{{user}} --verbose=2 {{item}}
+      register: stow
+      changed_when: "'LINK:' in stow.stderr"
+      loop: '{{dotfiles.pkgs}}'
+  tags: dotfiles
 
