@@ -9,7 +9,7 @@
     - name: user
       prompt: username
       private: no
-      default: "{{lookup('env', 'USER') | default('nobody', True)}}"
+      default: "{{lookup('ansible.builtin.env', 'USER') | default('nobody', True)}}"
 
   roles:
     - role: vbox

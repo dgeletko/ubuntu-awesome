@@ -166,7 +166,7 @@
       loop_control:
         label: '{{item.name}}'
 
-- name: user config
+- name: config xdg directories
   become_user: '{{user}}'
   block:
     - name: remove xdg user dirs
@@ -182,9 +182,23 @@
       ansible.builtin.command: xdg-user-dirs-update
       when: xdg_user_dirs.changed
 
-    - name: config bashrc
-      ansible.builtin.blockinfile:
-        path: ~/.bashrc
-        block: "{{lookup('file', 'files/home/bashrc')}}"
-        insertafter: EOF
+- name: config bashrc
+  become_user: '{{user}}'
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    block: "{{lookup('ansible.builtin.file', 'files/home/bashrc')}}"
+    insertafter: EOF
+
+- name: config theme
+  become_user: '{{user}}'
+  block:
+    - name: configure gtk2 theme
+      ansible.builtin.copy:
+        src: files/home/gtkrc-2.0
+        dest: ~/.gtkrc-2.0
+
+    - name: configure gtk3 theme
+      ansible.builtin.copy:
+        src: files/home/config/gtk-3.0
+        dest: ~/.config
 

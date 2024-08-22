@@ -81,16 +81,3 @@
       - qt5-style-kvantum
       - qt5-style-kvantum-themes
 
-- name: configure gtk theme
-  become_user: '{{user}}'
-  block:
-    - name: configure gtk2 theme
-      ansible.builtin.copy:
-        src: files/home/gtkrc-2.0
-        dest: ~/.gtkrc-2.0
-
-    - name: configure gtk3 theme
-      ansible.builtin.copy:
-        src: files/home/config/gtk-3.0
-        dest: ~/.config
-
