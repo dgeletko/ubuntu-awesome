@@ -1,48 +1,10 @@
 ---
 
-- name: clone qtile source repo
-  ansible.builtin.git:
-    repo: https://github.com/qtile/qtile.git
-    dest: /opt/qtile
-    version: v0.28.0
-
-- name: install qtile dependencies
-  block:
-    - name: install qtile host dependencies
-      ansible.builtin.apt:
-        state: present
-        name:
-          - libpangocairo-1.0-0
-          - python3-cairocffi
-          - python3-cffi
-          - python3-xcffib
-
-    - name: setup qtile virtualenv and update tools
-      ansible.builtin.pip:
-        state: latest
-        name:
-          - pip
-          - setuptools
-          - wheel
-        virtualenv: /opt/qtile/venv
-        virtualenv_command: python3 -m venv
-        virtualenv_site_packages: true
-
-    - name: install qtile venv dependencies
-      ansible.builtin.pip:
-        state: present
-        name:
-          - dbus-next
-        virtualenv: /opt/qtile/venv
-        virtualenv_command: python3 -m venv
-        virtualenv_site_packages: true
-
 - name: install qtile
   ansible.builtin.pip:
     state: present
-    editable: true
-    name: /opt/qtile
-    virtualenv: /opt/qtile/venv
+    name: qtile
+    virtualenv: /opt/qtile
     virtualenv_command: python3 -m venv
 
 - name: install qtile xsession launcher
