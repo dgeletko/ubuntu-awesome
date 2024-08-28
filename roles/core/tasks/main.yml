@@ -7,19 +7,10 @@
     purge: true
     autoremove: true
     name:
-      - byobu
-      - cloud-guest-utils
-      - cloud-init*
-      - landscape-*
-      - lxd-agent-loader
-      - open-vm-tools
-      - pollinate
-      - popularity-contest
       - snap
       - snapd
-      - thin-provisioning-tools
-      - ubuntu-docs
       - ubuntu-server
+      - ubuntu-server-minimal
 
 - name: remove server files
   ansible.builtin.file:
@@ -37,98 +28,103 @@
     upgrade: dist
     autoremove: true
 
-- name: install core system packages
+- name: install core packages
   ansible.builtin.apt:
     state: present
     name:
-      - acl
-      - acpi
-      - acpi-support
-      - alsa-base
-      - anacron
-      - at
-      - automake
-      - bash-completion
-      - bc
-      - bolt
-      - build-essential
-      - ca-certificates
       - cifs-utils
       - cpufrequtils
       - cryptsetup
       - cryptsetup-initramfs
-      - dbus-x11
-      - desktop-file-utils
       - dkms
-      - dos2unix
       - ethtool
-      - fonts-ubuntu-console
-      - fwupd
-      - fwupd-signed
-      - gamemode 
-      - genisoimage 
-      - ghostscript-x
       - git
-      - gnome-keyring
-      - gvfs
-      - gvfs-backends
-      - gvfs-fuse 
       - htop
-      - inputattach
+      - hwdata
       - inxi
-      - kerneloops
-      - laptop-detect
-      - libcanberra-pulse
-      - libglib2.0-bin
       - lvm2
-      - menu
-      - menu-xdg
       - net-tools
       - p7zip-full
-      - patch
-      - pavucontrol
-      - pipenv
       - pipx
-      - pkg-config
-      - policykit-1
-      - policykit-desktop-privileges
-      - pulseaudio
-      - pulseaudio-module-bluetooth
-      - python-is-python3
-      - python3
       - python3-pip
       - python3-setuptools
       - python3-venv
-      - rfkill
-      - rlwrap
-      - secureboot-db
-      - software-properties-common
+      - python3-wheel
+      - shim-signed
+      - squashfs-tools
+      - sysstat
       - tlp
-      - tree
-      - ubuntu-drivers-common
-      #- ubuntu-restricted-addons # necessary? just install codecs as needed
-      - udisks2
-      - unattended-upgrades
-      - unzip
-      - update-notifier-common
+      - tmux
+      - ubuntu-standard
       - vim
-      - wireless-tools 
-      - wpasupplicant 
-      - xdg-user-dirs-gtk
-      - xdg-utils
-      - xorg
-      - xterm
-      - zip 
+      - zerofree
 
-- name: install core system packages (no recommends)
+- name: install minimal desktop packages
   ansible.builtin.apt:
     state: present
-    install_recommends: false
     name:
-      - cups
-      - network-manager # numerous unnecessary packages/plugins
-      - software-properties-gtk # requires session manager
+      # depends
+      - alsa-base
+      - alsa-utils
+      - anacron
+      - bc
+      - ca-certificates
+      - dmz-cursor-theme
+      - fontconfig
+      - fonts-dejavu-core
+      - fonts-freefont-ttf
+      - ghostscript-x
+      - gstreamer1.0-alsa
+      - gstreamer1.0-plugins-base-apps
+      - gstreamer1.0-pulseaudio
+      - inputattach
+      - libnotify-bin
+      - libu2f-udev
+      - pulseaudio
+      - rfkill
+      - ubuntu-drivers-common
+      - unzip
+      - wireless-tools
+      - wpasupplicant
+      - xdg-user-dirs
+      - xdg-user-dirs-gtk
+      - xorg
+      - xterm
       - zenity
+      - zip
+      # recommends
+      - acpi-support
+      - bluez
+      - cups
+      - dirmngr
+      - fonts-ubuntu
+      - fwupd
+      - fwupd-signed
+      - gamemode
+      - gnome-keyring
+      - gpg-agent
+      - gvfs-fuse
+      - kerneloops
+      - laptop-detect
+      - libglib2.0-bin
+      - libpam-fprintd
+      - libpam-gnome-keyring
+      - libpam-sss
+      - network-manager
+      - policykit-desktop-privileges
+      - pulseaudio-module-bluetooth
+      - xcursor-themes
+      - xdg-desktop-portal-gtk
+      - xdg-utils
+      # other
+      - acl
+      - accountsservice
+      - dconf-cli
+      - gvfs-backends
+      - language-pack-en
+      - switcheroo-control
+      #- ubuntu-restricted-addons # necessary? just install codecs as needed
+      - unattended-upgrades
 
 - name: install plymouth boot splash
   ansible.builtin.apt:
