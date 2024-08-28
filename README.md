@@ -8,15 +8,15 @@ pull in the entire Gnome desktop, etc. For example, simply installing `libnotify
 so if one is not already installed it defaults to installing the `gnome-shell` package.
 
 The initial goal was a simple lightweight desktop and minimal packages were installed. This goal has somewhat
-evolved to simply include all packages from the `ubuntu-desktop-minimal` package except those related to the
-actual desktop environment to provide users with a more familiar experience. The _depends_ and _recommends_ 
-lists can be used as a reference on <https://packages.ubuntu.com>.
+evolved to simply include all packages from the `ubuntu-desktop-minimal` meta package except those related to the
+actual desktop environment to provide users with a more familiar experience. The _depends_ and _recommends_ lists
+can be used as a reference on <https://packages.ubuntu.com>.
 
 > **NOTE:** The [qtile](https://qtile.org) window manager is also installed by default now for Wayland support
 
 ## Prerequisites
 
-These scripts were written primarily for Ubuntu LTS Linux distributions. The goal is to support the last 2 LTS
+These scripts were written primarily for Ubuntu LTS Linux distributions. The goal is to support the 2 latest LTS
 releases.
 
 In order to run the provisioning scripts, Ansible must be installed as a prerequisite. Ansible can be installed
@@ -42,6 +42,15 @@ which will automatically clone the repo.
   $ ansible-pull --url https://github.com/dgeletko/ubuntu-awesome -i hosts --ask-become-pass ubuntu.yml
   ```
 
-> **NOTE:** The repo includes [Vagrant](https://www.vagrantup.com) support for testing in a virtual machine
-> using the [Bento](https://app.vagrantup.com/bento) project base boxes.
+## Testing
+
+The repo includes [Vagrant](https://www.vagrantup.com) support for testing in a
+[VirtualBox](https://www.virtualbox.org) virtual machine using [Bento](https://app.vagrantup.com/bento) project
+base boxes. To provision a VM, simply run the following from the repo root:
+
+  ```bash
+  $ vagrant up
+  ```
+
+> **NOTE:** There will be some package differences due to how the base boxes strip some of the server packages.
 
