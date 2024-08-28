@@ -52,6 +52,9 @@
       - make
       #- nemiver
       - netcat
+      - patch
+      - pipenv
+      - pkg-config
       - rlwrap
       - socat
       - tcpdump
@@ -101,6 +104,7 @@
       #- remmina
       #- remmina-plugin-rdp
       #- audacious, lxmusic, lollypop, cmus, moc
+      - seahorse
       - stow
       - tmux
       - tree

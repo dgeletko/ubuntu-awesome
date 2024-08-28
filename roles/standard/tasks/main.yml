@@ -25,46 +25,31 @@
     state: present
     name:
       - arandr
-      - picom # compton
+      - fonts-ubuntu
+      - kitty
       #- firefox # note: snap
-      - libnotify-bin # note: depends on gnome shell unless notification daemon installed (awesome, dunst)
       - lxappearance
       - lxpolkit
       - maim # scrot, flameshot, gnome-screenshot
       - network-manager-gnome # note: depends on gnome shell unless policykit auth agent (lxpolkit) and notification daemon installed (awesome, dunst)
       - nitrogen
+      - pavucontrol
       - pasystray
       - pcmanfm
+      - picom
       - playerctl
       - ranger
       - rofi
       - rxvt-unicode
       - sxiv
       - vim
-      #- update-manager # note: depends on gnome shell unless policykit auth agent installed (lxpolkit) (also requires session manager)
       - xarchiver # engrampa
-
-- name: install core software (no recommends)
-  ansible.builtin.apt:
-    state: present
-    install_recommends: false
-    name:
-      - kitty
-
-- name: install fonts
-  ansible.builtin.apt:
-    state: present
-    name:
-      - fonts-freefont-ttf 
-      - fonts-ubuntu
-      - powerline
 
 - name: install themes
   ansible.builtin.apt:
     state: present
     name:
       - arc-theme
-      - dmz-cursor-theme
       - gtk2-engines
       - papirus-icon-theme
       - qt5ct
@@ -73,11 +58,11 @@
       - qt6-gtk-platformtheme
       - ubuntu-wallpapers
 
-- name: install themes (no recommends)
-  ansible.builtin.apt:
-    state: present
-    install_recommends: false
-    name:
-      - qt5-style-kvantum
-      - qt5-style-kvantum-themes
+#- name: install themes (no recommends)
+#  ansible.builtin.apt:
+#    state: present
+#    install_recommends: false
+#    name:
+#      - qt5-style-kvantum
+#      - qt5-style-kvantum-themes
 
