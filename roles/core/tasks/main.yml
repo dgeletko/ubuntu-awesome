@@ -28,17 +28,17 @@
     upgrade: dist
     autoremove: true
 
-- name: install core packages
+- name: install core system packages
   ansible.builtin.apt:
     state: present
     name:
+      - acl
       - cifs-utils
       - cpufrequtils
       - cryptsetup
       - cryptsetup-initramfs
       - dkms
       - ethtool
-      - git
       - htop
       - hwdata
       - inxi
@@ -51,15 +51,15 @@
       - python3-venv
       - python3-wheel
       - shim-signed
-      - squashfs-tools
       - sysstat
       - tlp
       - tmux
       - ubuntu-standard
       - vim
+      - xz-utils
       - zerofree
 
-- name: install minimal desktop packages
+- name: install standard ubuntu system packages
   ansible.builtin.apt:
     state: present
     name:
@@ -117,9 +117,10 @@
       - xdg-desktop-portal-gtk
       - xdg-utils
       # other
-      - acl
       - accountsservice
       - dconf-cli
+      - desktop-file-utils
+      - gvfs
       - gvfs-backends
       - language-pack-en
       - switcheroo-control
