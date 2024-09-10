@@ -1,0 +1,31 @@
+---
+
+repos:
+  brave-browser: true
+  google-chrome: true
+  mozilla: true
+  virtualbox: true
+  vscode: true
+  flatpak: true
+
+apps:
+  browser: brave-browser
+  file_manager: pcmanfm
+  launcher: rofi
+  terminal: kitty
+
+window_managers:
+  awesome: true
+  qtile: true
+
+theme:
+  style:
+    name: Arc-Dark
+    pkg: arc-theme
+  icon:
+    name: Papirus-Dark
+    pkg: papirus-icon-theme
+  font:
+    name: Ubuntu 10
+    pkg: fonts-ubuntu
+

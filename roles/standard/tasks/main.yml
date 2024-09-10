@@ -1,5 +1,107 @@
 ---
 
+- name: add additional apt repos
+  vars:
+    keyring: /usr/share/keyrings
+  block:
+    - name: add repo key
+      ansible.builtin.get_url:
+        url: '{{item.key.url}}'
+        dest: '{{keyring}}/{{item.key.dest}}'
+      loop: '{{apt_repos}}'
+      loop_control:
+        label: '{{item.name}}'
+      when: repos[item.name] | bool
+
+    - name: add repo
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
+        state: present
+        filename: '{{item.name}}'
+      loop: '{{apt_repos}}'
+      loop_control:
+        label: '{{item.name}}'
+      when: repos[item.name] | bool
+
+    - name: set mozilla repo priority
+      ansible.builtin.copy:
+        src: files/etc/apt/preferences.d/mozilla
+        dest: /etc/apt/preferences.d
+        mode: 0644
+      when: repos.mozilla | bool
+
+- name: update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: install standard ubuntu system packages
+  ansible.builtin.apt:
+    state: present
+    name:
+      # depends
+      - alsa-base
+      - alsa-utils
+      - anacron
+      - bc
+      - ca-certificates
+      - dmz-cursor-theme
+      - fontconfig
+      - fonts-dejavu-core
+      - fonts-freefont-ttf
+      - ghostscript-x
+      - gstreamer1.0-alsa
+      - gstreamer1.0-plugins-base-apps
+      - gstreamer1.0-pulseaudio
+      - inputattach
+      - libnotify-bin
+      - libu2f-udev
+      - pulseaudio
+      - rfkill
+      - ubuntu-drivers-common
+      - unzip
+      - wireless-tools
+      - wpasupplicant
+      - xdg-user-dirs
+      - xdg-user-dirs-gtk
+      - xorg
+      - xterm
+      - zenity
+      - zip
+      # recommends
+      - acpi-support
+      - bluez
+      - cups
+      - dirmngr
+      - fonts-ubuntu
+      - fwupd
+      - fwupd-signed
+      - gamemode
+      - gnome-keyring
+      - gpg-agent
+      - gvfs-fuse
+      - kerneloops
+      - laptop-detect
+      - libglib2.0-bin
+      - libpam-fprintd
+      - libpam-gnome-keyring
+      - libpam-sss
+      - network-manager
+      - policykit-desktop-privileges
+      - pulseaudio-module-bluetooth
+      - xcursor-themes
+      - xdg-desktop-portal-gtk
+      - xdg-utils
+      # other
+      - accountsservice
+      - dconf-cli
+      - desktop-file-utils
+      - gvfs
+      - gvfs-backends
+      - language-pack-en
+      - switcheroo-control
+      - ubuntu-restricted-addons
+      - unattended-upgrades
+
 - name: install login manager
   ansible.builtin.apt:
     state: present
@@ -9,60 +111,92 @@
       - light-locker
       - light-locker-settings
       - slick-greeter
+  notify: restart lightdm
 
-- name: install awesomewm
+- name: install awesome window manager
   ansible.builtin.import_tasks: awesome.yml
-  tags: awesomewm
-  notify: restart lightdm
+  when: window_managers.awesome | bool
 
-- name: install qtile
+- name: install qtile window manager
   ansible.builtin.import_tasks: qtile.yml
-  tags: qtile
-  notify: restart lightdm
+  when: window_managers.qtile | bool
 
-- name: install core software
+- name: install standard support software
   ansible.builtin.apt:
     state: present
     name:
+      - '{{apps.browser}}'
+      - '{{apps.file_manager}}'
+      - '{{apps.launcher}}'
+      - '{{apps.terminal}}'
       - arandr
       - fonts-ubuntu
-      - kitty
-      #- firefox # note: snap
       - lxappearance
       - lxpolkit
-      - maim # scrot, flameshot, gnome-screenshot
       - network-manager-gnome # note: depends on gnome shell unless policykit auth agent (lxpolkit) and notification daemon installed (awesome, dunst)
       - nitrogen
       - pavucontrol
       - pasystray
-      - pcmanfm
       - picom
       - playerctl
       - ranger
-      - rofi
-      - rxvt-unicode
       - sxiv
       - vim
-      - xarchiver # engrampa
 
-- name: install themes
+- name: install theme packages
   ansible.builtin.apt:
     state: present
     name:
-      - arc-theme
+      - '{{theme.style.pkg}}'
+      - '{{theme.icon.pkg}}'
+      - '{{theme.font.pkg}}'
       - gtk2-engines
-      - papirus-icon-theme
       - qt5ct
       - qt5-gtk-platformtheme
       - qt5-gtk2-platformtheme
+      - qt5-style-plugins
       - qt6-gtk-platformtheme
       - ubuntu-wallpapers
 
-#- name: install themes (no recommends)
-#  ansible.builtin.apt:
-#    state: present
-#    install_recommends: false
-#    name:
-#      - qt5-style-kvantum
-#      - qt5-style-kvantum-themes
+- name: configure theme
+  become_user: '{{user}}'
+  block:
+    - name: configure gtk2 theme
+      ansible.builtin.template:
+        src: templates/home/gtkrc-2.0.j2
+        dest: ~/.gtkrc-2.0
+        mode: 0644
+
+    - name: create gtk3 config directory
+      ansible.builtin.file:
+        path: ~/.config/gtk-3.0
+        state: directory
+
+    - name: configure gtk3 theme
+      ansible.builtin.template:
+        src: templates/home/config/gtk-3.0/settings.ini.j2
+        dest: ~/.config/gtk-3.0/settings.ini
+        mode: 0644
+
+- name: add flatpak support
+  block:
+    - name: install flatpak
+      ansible.builtin.apt:
+        state: present
+        name:
+          - flatpak
+          - flatpak-xdg-utils
+
+    - name: add flatpak flathub repo
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+  when: repos.flatpak | bool
+
+- name: create xdg user dirs
+  become_user: '{{user}}'
+  ansible.builtin.command: 'xdg-user-dirs-update'
+  args:
+    creates: '~/Desktop'
 
