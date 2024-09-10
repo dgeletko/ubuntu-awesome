@@ -1,0 +1,81 @@
+---
+
+- name: enable quiet splash in grub
+  block:
+    - name: find quiet splash in grub cmdline
+      ansible.builtin.command: grep -E '^\s*GRUB_CMDLINE_LINUX(_DEFAULT)?\s*=\s*\".*quiet splash.*"' /etc/default/grub
+      register: grub_quiet_splash
+      ignore_errors: true
+      failed_when: grub_quiet_splash.rc >= 2
+      changed_when: false
+
+    - name: add quiet splash in grub
+      ansible.builtin.lineinfile:
+        name: /etc/default/grub
+        regexp: '^\s*GRUB_CMDLINE_LINUX_DEFAULT\s*=\s*"(.*)"'
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash \1"'
+        backrefs: true
+        state: present
+      when: grub_quiet_splash.rc == 1
+      notify: update grub
+
+- name: set timezone
+  community.general.timezone:
+    name: '{{timezone}}'
+
+- name: configure network manager as netplan renderer
+  block:
+    - name: remove installer netplan config
+      ansible.builtin.file:
+        path: '{{item}}'
+        state: absent
+      with_fileglob:
+        - /etc/netplan/*.yaml
+      when: item | basename != '01-network-manager-all.yaml'
+
+    - name: copy network manager netplan config
+      ansible.builtin.copy:
+        src: files/etc/netplan/01-network-manager-all.yaml
+        dest: /etc/netplan
+        mode: 0600
+
+    - name: disable systemd network daemon
+      ansible.builtin.systemd:
+        name: systemd-networkd
+        enabled: false
+
+    - name: enable network manager daemon
+      ansible.builtin.systemd:
+        name: NetworkManager
+        enabled: true
+
+- name: tweak kernel
+  ansible.posix.sysctl:
+    name: '{{item.key}}'
+    value: '{{item.value}}'
+    state: present
+    reload: true
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/95-custom.conf
+  loop: '{{sysctl | dict2items}}'
+
+- name: add i386 multiarch support
+  block:
+    - name: get current foreign architectures
+      ansible.builtin.command: 'dpkg --print-foreign-architectures'
+      register: dpkg_foreign_archs
+      changed_when: false
+
+    - debug: msg="{{dpkg_foreign_archs.stdout}}"
+
+    - name: add i386 architecture
+      ansible.builtin.command: 'dpkg --add-architecture i386'
+      when: "'i386' not in dpkg_foreign_archs.stdout"
+      register: dpkg_add_arch
+
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+      when: dpkg_add_arch.changed
+  when: multiarch.i386
+

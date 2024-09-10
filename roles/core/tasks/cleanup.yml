@@ -1,0 +1,43 @@
+---
+
+- name: remove server packages
+  ansible.builtin.apt:
+    state: absent
+    autoremove: true
+    purge: true
+    name:
+      - ubuntu-server
+      - ubuntu-server-minimal
+
+- name: remove server files
+  ansible.builtin.file:
+    path: '{{item}}'
+    state: absent
+  loop:
+    - /etc/byobu
+    - /etc/cloud
+    - /etc/pollinate
+    - /etc/vmware-tools
+
+- name: remove snap
+  block:
+    - name: remove snap
+      ansible.builtin.apt:
+        state: absent
+        autoremove: true
+        purge: true
+        name:
+          - snap
+          - snapd
+
+    - name: remove snap files
+      ansible.builtin.file:
+        path: /root/snap
+        state: absent
+  when: not repos.snap | bool
+
+- name: remove unused packages
+  ansible.builtin.apt:
+    autoremove: true
+    purge: true
+

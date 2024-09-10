@@ -1,0 +1,13 @@
+---
+
+repos:
+  snap: false
+
+timezone: America/New_York
+
+sysctl:
+  vm.swappiness: 10
+
+multiarch:
+  i386: false
+

@@ -1,0 +1,70 @@
+---
+
+- name: install updates
+  ansible.builtin.apt:
+    upgrade: dist
+    autoremove: true
+
+- name: install core system packages
+  ansible.builtin.apt:
+    state: present
+    name:
+      - acl
+      - bzip2
+      - cifs-utils
+      - cpufrequtils
+      - cryptsetup
+      - cryptsetup-initramfs
+      - dkms
+      - ethtool
+      - git
+      - htop
+      - hwdata
+      - laptop-detect
+      - lvm2
+      - net-tools
+      - network-manager
+      - p7zip-full
+      - python-is-python3
+      - python3-pip
+      - python3-setuptools
+      - python3-venv
+      - python3-wheel
+      - shim-signed
+      - sysstat
+      - tlp
+      - tmux
+      - ubuntu-standard
+      - unzip
+      - vim
+      - xz-utils
+      - zerofree
+      - zip
+
+- name: install core system packages (no recommends)
+  ansible.builtin.apt:
+    state: present
+    install_recommends: false
+    name:
+      - inxi
+      - neofetch
+      - pipx
+
+- name: add snap support
+  ansible.builtin.apt:
+    state: present
+    name:
+      - snap
+      - snapd
+  when: repos.snap | bool
+
+- name: install plymouth boot splash
+  ansible.builtin.apt:
+    state: present
+    name:
+      - plymouth
+      - plymouth-theme-ubuntu-logo
+      - plymouth-theme-ubuntu-text
+      - plymouth-theme-spinner
+  notify: update initramfs
+

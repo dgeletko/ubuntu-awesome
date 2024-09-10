@@ -44,6 +44,11 @@
           ansible.builtin.assert:
             that: ansible_facts['architecture'] == "x86_64"
             fail_msg: "unsupported architecture: {{ansible_facts['architecture']}}"
+
+        - name: update apt cache
+          ansible.builtin.apt:
+            update_cache: true
+          changed_when: false
       tags:
         - always
 
