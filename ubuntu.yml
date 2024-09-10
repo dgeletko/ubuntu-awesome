@@ -20,8 +20,8 @@
         - vagrant | default(false) | bool
     - role: core
       tags: core
-    - role: standard
-      tags: standard
+    - role: base
+      tags: base
     - role: user
       tags: user
 
