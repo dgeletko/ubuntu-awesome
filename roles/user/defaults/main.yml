@@ -3,24 +3,24 @@
 apps:
   docker: true
   libreoffice: false
+  rust: false
   virtualbox: true
+  vscode: false
   wireshark: false
 
-dev:
-  rust: false
-  vscode: false
-  vscode_extensions:
-    - ms-vscode.cpptools
-    - ms-vscode.makefile-tools
-    - ms-vscode.cmake-tools
-    - ms-vscode-remote.remote-containers
-    - ms-vscode.hexeditor
-    - ms-python.python
-    - ms-python.debugpy
-    - ms-azuretools.vscode-docker
-    - rust-lang.rust-analyzer
-    - redhat.ansible
-    - vscode-icons-team.vscode-icons
+# ref: https://marketplace.visualstudio.com/vscode
+vscode_extensions:
+  - ms-vscode.cpptools
+  - ms-vscode.makefile-tools
+  - ms-vscode.cmake-tools
+  - ms-vscode-remote.remote-containers
+  - ms-vscode.hexeditor
+  - ms-python.python
+  - ms-python.debugpy
+  - ms-azuretools.vscode-docker
+  - rust-lang.rust-analyzer
+  - redhat.ansible
+  - vscode-icons-team.vscode-icons
 
 nerd_fonts:
   - name: FiraCode

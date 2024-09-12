@@ -17,7 +17,6 @@
       - gitk
       - lcov
       - make
-      - netcat
       - patch
       - pipenv
       - pkg-config
@@ -25,10 +24,72 @@
       - python3-setuptools
       - python3-venv
       - python3-wheel
-      - socat
       - vagrant
       - valgrind
       - wget
+
+- name: install utils
+  ansible.builtin.apt:
+    state: present
+    name:
+      - autojump
+      - bat
+      - fzf
+      - htop
+      - neofetch
+      - netcat
+      - pdfgrep
+      - pipx
+      - playerctl
+      - python3
+      - ripgrep
+      - rlwrap
+      - socat
+      - stow
+      - tasksh
+      - taskwarrior
+      - tcpdump
+      - tmux
+      - tree
+      - vim
+      - vit
+
+- name: install desktop packages
+  ansible.builtin.apt:
+    state: present
+    name:
+      - celluloid # video (alt: mpv, parole)
+      - cmus # audio (alt: rhythmbox, audacious, lxmusic, lollypop, moc)
+      - deja-dup # backup (alt: borg)
+      - font-manager # fonts
+      - ghex
+      - gimp
+      - gnome-disk-utility # disk (alt: gparted)
+      - gnome-firmware
+      - gpick # color picker
+      - gpicview # image (alt: ristretto, eom, sxiv)
+      - gtkterm
+      - keepassxc # password manager
+      - maim # screenshot (alt: flameshot, scrot)
+      - mate-calc # calculator (alt: galculator)
+      - meld
+      - mousepad # editor (alt: pluma, gedit)
+      - ncdu # disk usage (alt: baobab, ducs)
+      - seahorse # gpg front end
+      - usb-creator-gtk
+      - zathura # doc viewer (alt: atril, evince)
+
+- name: install libreoffice
+  ansible.builtin.apt:
+    state: present
+    name:
+      - libreoffice-calc
+      - libreoffice-gtk3
+      - libreoffice-help-en-us
+      - libreoffice-impress
+      - libreoffice-style-breeze
+      - libreoffice-writer
+  when: apps.libreoffice | bool
 
 - name: install docker
   block:
@@ -47,91 +108,6 @@
         groups: docker
         append: true
   when: apps.docker | bool
-
-- name: install latest rust
-  become_user: '{{user}}'
-  ansible.builtin.shell:
-    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    creates: ~/.cargo/bin/rustc
-  when: dev.rust | bool
-
-- name: install vscode
-  block:
-    - name: install vscode
-      ansible.builtin.apt:
-        state: present
-        name:
-          - code
-
-    - name: install vscode extensions
-      become_user: '{{user}}'
-      ansible.builtin.command: 'code --install-extension {{item}}'
-      register: install_vscode_extension
-      args:
-        creates: '~/.vscode/extensions/{{item}}-*'
-      loop: '{{vscode_extensions}}'
-  when: dev.vscode | bool
-
-- name: install utils
-  ansible.builtin.apt:
-    state: present
-    name:
-      - autojump
-      - bat
-      - fzf
-      - htop
-      - neofetch
-      - pdfgrep
-      - pipx
-      - playerctl
-      - python3
-      - ripgrep
-      - rlwrap
-      - stow
-      - tasksh
-      - taskwarrior
-      - tcpdump
-      - tmux
-      - tree
-      - vim
-      - vit
-
-- name: install graphical packages
-  ansible.builtin.apt:
-    state: present
-    name:
-      - celluloid # parole
-      - deja-dup # gtk3
-      - font-manager
-      - ghex
-      - gimp # no install recommends?
-      - gnome-disk-utility # gtk3 (gparted)
-      - gnome-firmware # gtk3
-      - gpicview # ristretto, eom
-      - gtkterm
-      - keepassxc
-      - maim # scrot, flameshot
-      - mate-calc # galculator
-      - meld
-      - mousepad # pluma
-      - ncdu # baobab (gtk3), ducs
-      #- audacious, lxmusic, lollypop, cmus, moc
-      - seahorse
-      - sxiv
-      - usb-creator-gtk
-      - zathura # atril, evince
-
-- name: install libreoffice
-  ansible.builtin.apt:
-    state: present
-    name:
-      - libreoffice-calc
-      - libreoffice-gtk3
-      - libreoffice-help-en-us
-      - libreoffice-impress
-      - libreoffice-style-breeze
-      - libreoffice-writer
-  when: apps.libreoffice | bool
 
 - name: install wireshark
   block:
@@ -173,7 +149,29 @@
     - ansible_facts['virtualization_role'] != "guest"
     - apps.virtualbox | bool
 
----
+- name: install vscode
+  block:
+    - name: install vscode
+      ansible.builtin.apt:
+        state: present
+        name:
+          - code
+
+    - name: install vscode extensions
+      become_user: '{{user}}'
+      ansible.builtin.command: 'code --install-extension {{item}}'
+      register: install_vscode_extension
+      args:
+        creates: '~/.vscode/extensions/{{item}}-*'
+      loop: '{{vscode_extensions}}'
+  when: apps.vscode | bool
+
+- name: install latest rust
+  become_user: '{{user}}'
+  ansible.builtin.shell:
+    cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    creates: ~/.cargo/bin/rustc
+  when: apps.rust | bool
 
 - name: install nerd fonts
   become_user: '{{user}}'
