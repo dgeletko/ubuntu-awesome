@@ -1,6 +1,6 @@
 ---
 
-- name: ubuntu
+- name: standard
   hosts: all
   become: true
   gather_facts: true
