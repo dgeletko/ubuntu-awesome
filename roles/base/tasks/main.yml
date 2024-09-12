@@ -126,6 +126,7 @@
   ansible.builtin.apt:
     state: present
     name:
+      - '{{apps.archiver}}'
       - '{{apps.browser}}'
       - '{{apps.file_manager}}'
       - '{{apps.launcher}}'

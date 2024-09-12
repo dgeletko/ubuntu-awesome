@@ -13,6 +13,7 @@ window_managers:
   qtile: true
 
 apps:
+  archiver: xarchiver
   browser: brave-browser
   file_manager: pcmanfm
   launcher: rofi
