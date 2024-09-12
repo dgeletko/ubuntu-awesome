@@ -1,46 +1,13 @@
 ---
 
-- name: add additional apt repos
-  vars:
-    keyring: /usr/share/keyrings
-  block:
-    - name: add repo key
-      ansible.builtin.get_url:
-        url: '{{item.key.url}}'
-        dest: '{{keyring}}/{{item.key.dest}}'
-      loop: '{{repos}}'
-      loop_control:
-        label: '{{item.name}}'
-
-    - name: add repo
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
-        state: present
-        filename: '{{item.name}}'
-      loop: '{{repos}}'
-      loop_control:
-        label: '{{item.name}}'
-
-- name: allow wireshark to run non-root # must be set prior to installing package
-  ansible.builtin.debconf:
-    name: wireshark-common
-    question: wireshark-common/install-setuid
-    value: 'true'
-    vtype: select
-
-- name: install core dev tools
+- name: install dev tools
   ansible.builtin.apt:
     state: present
     name:
-      - ansible
       - build-essential
       - cmake
-      - code
       - cppcheck
       - curl
-      - docker.io
-      - docker-buildx
-      - docker-compose-v2
       - dos2unix
       - gdb-multiarch
       - git
@@ -50,98 +17,163 @@
       - gitk
       - lcov
       - make
-      #- nemiver
       - netcat
       - patch
       - pipenv
       - pkg-config
-      - playerctl
-      - rlwrap
+      - python3-pip
+      - python3-setuptools
+      - python3-venv
+      - python3-wheel
       - socat
-      - tcpdump
       - vagrant
       - valgrind
       - wget
 
-- name: install user packages
-  ansible.builtin.apt:
-    state: present
-    name:
-      - autojump
-      - brave-browser # google-chrome-stable
-      - celluloid # parole
-      - deja-dup # gtk3
-      - font-manager
-      - fzf
-      - ghex
-      - gimp # no install recommends?
-      - gnome-disk-utility # gtk3 (gparted)
-      - gnome-firmware # gtk3
-      - gpicview # ristretto, eom
-      - gtkterm
-      - htop
-      - keepassxc
-      - libreoffice-calc
-      - libreoffice-gtk3
-      - libreoffice-help-en-us
-      - libreoffice-impress
-      - libreoffice-style-breeze
-      - libreoffice-writer
-      - libsdl-ttf2.0-0 # vbox
-      - mate-calc # galculator
-      - meld
-      - mousepad # pluma
-      - ncdu # baobab (gtk3), ducs
-      - neofetch
-      - pdfgrep
-      - pipx
-      - python3
-      - python3-pip
-      - python3-psutil # ansible dconf module
-      - python3-setuptools
-      - python3-venv
-      #- qt5-default
-      #- redshift-gtk
-      #- remmina
-      #- remmina-plugin-rdp
-      #- audacious, lxmusic, lollypop, cmus, moc
-      - seahorse
-      - sxiv
-      - stow
-      - tmux
-      - tree
-      - usb-creator-gtk
-      - vim
-      - virtualbox-7.0
-      - wireshark
-      - xterm
-      - zathura # atril, evince
+- name: install docker
+  block:
+    - name: install docker
+      ansible.builtin.apt:
+        state: present
+        name:
+          - docker.io
+          - docker-buildx
+          - docker-compose-v2
+          - python3-docker
 
-- name: install vscode extensions
-  become_user: '{{user}}'
-  ansible.builtin.command: 'code --install-extension {{item}}'
-  register: install_vscode_extension
-  args:
-    creates: '~/.vscode/extensions/{{item}}-*'
-  loop:
-    - ms-vscode.cpptools
-    - ms-vscode.makefile-tools
-    - ms-vscode.cmake-tools
-    - ms-vscode-remote.remote-containers
-    - ms-vscode.hexeditor
-    - ms-python.python
-    - ms-python.debugpy
-    - ms-azuretools.vscode-docker
-    - rust-lang.rust-analyzer
-    - redhat.ansible
-    - vscode-icons-team.vscode-icons
+    - name: add {{user}} user to docker group
+      user:
+        name: '{{user}}'
+        groups: docker
+        append: true
+  when: apps.docker | bool
 
 - name: install latest rust
   become_user: '{{user}}'
   ansible.builtin.shell:
     cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
+  when: dev.rust | bool
 
+- name: install vscode
+  block:
+    - name: install vscode
+      ansible.builtin.apt:
+        state: present
+        name:
+          - code
+
+    - name: install vscode extensions
+      become_user: '{{user}}'
+      ansible.builtin.command: 'code --install-extension {{item}}'
+      register: install_vscode_extension
+      args:
+        creates: '~/.vscode/extensions/{{item}}-*'
+      loop: '{{vscode_extensions}}'
+  when: dev.vscode | bool
+
+- name: install utils
+  ansible.builtin.apt:
+    state: present
+    name:
+      - autojump
+      - bat
+      - fzf
+      - htop
+      - neofetch
+      - pdfgrep
+      - pipx
+      - playerctl
+      - python3
+      - ripgrep
+      - rlwrap
+      - stow
+      - tasksh
+      - taskwarrior
+      - tcpdump
+      - tmux
+      - tree
+      - vim
+      - vit
+
+- name: install graphical packages
+  ansible.builtin.apt:
+    state: present
+    name:
+      - celluloid # parole
+      - deja-dup # gtk3
+      - font-manager
+      - ghex
+      - gimp # no install recommends?
+      - gnome-disk-utility # gtk3 (gparted)
+      - gnome-firmware # gtk3
+      - gpicview # ristretto, eom
+      - gtkterm
+      - keepassxc
+      - maim # scrot, flameshot
+      - mate-calc # galculator
+      - meld
+      - mousepad # pluma
+      - ncdu # baobab (gtk3), ducs
+      #- audacious, lxmusic, lollypop, cmus, moc
+      - seahorse
+      - sxiv
+      - usb-creator-gtk
+      - zathura # atril, evince
+
+- name: install libreoffice
+  ansible.builtin.apt:
+    state: present
+    name:
+      - libreoffice-calc
+      - libreoffice-gtk3
+      - libreoffice-help-en-us
+      - libreoffice-impress
+      - libreoffice-style-breeze
+      - libreoffice-writer
+  when: apps.libreoffice | bool
+
+- name: install wireshark
+  block:
+    - name: allow wireshark to run non-root # must be set prior to installing package
+      ansible.builtin.debconf:
+        name: wireshark-common
+        question: wireshark-common/install-setuid
+        value: 'true'
+        vtype: select
+
+    - name: install wireshark
+      ansible.builtin.apt:
+        state: present
+        name:
+          - wireshark
+
+    - name: add user to wireshark group
+      ansible.builtin.user:
+        name: '{{user}}'
+        append: true
+        groups: wireshark
+  when: apps.wireshark | bool
+
+- name: install virtualbox
+  block:
+    - name: install virtualbox
+      ansible.builtin.apt:
+        state: present
+        name:
+          - libsdl-ttf2.0-0
+          - virtualbox-7.0
+
+    - name: add user to vboxsf group
+      ansible.builtin.user:
+        name: '{{user}}'
+        append: true
+        groups: vboxsf
+  when:
+    - ansible_facts['virtualization_role'] != "guest"
+    - apps.virtualbox | bool
+
+---
 
 - name: install nerd fonts
   become_user: '{{user}}'
@@ -150,15 +182,17 @@
   block:
     - name: create local fonts directory
       ansible.builtin.file:
-        path: '{{fonts_dir}}'
+        path: '{{fonts_dir}}/{{item.name}}'
         state: directory
+      loop: '{{nerd_fonts}}'
+      loop_control:
+        label: '{{item.name}}'
 
     - name: install nerd fonts
       ansible.builtin.unarchive:
         src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{item.pkg}}.zip
-        dest: '{{fonts_dir}}'
-        include: '{{item.name}}*.ttf'
-        creates: '{{fonts_dir}}/{{item.name}}*.ttf'
+        dest: '{{fonts_dir}}/{{item.name}}'
+        creates: '{{fonts_dir}}/{{item.name}}/*.ttf'
         remote_src: true
       loop: '{{nerd_fonts}}'
       loop_control:
@@ -180,7 +214,7 @@
       ansible.builtin.command: xdg-user-dirs-update
       when: xdg_user_dirs.changed
 
-- name: config bash aliases
+- name: copy bash aliases
   become_user: '{{user}}'
   ansible.builtin.copy:
     src: files/home/bash_aliases
