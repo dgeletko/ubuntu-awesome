@@ -55,6 +55,7 @@
       - patch
       - pipenv
       - pkg-config
+      - playerctl
       - rlwrap
       - socat
       - tcpdump
@@ -105,6 +106,7 @@
       #- remmina-plugin-rdp
       #- audacious, lxmusic, lollypop, cmus, moc
       - seahorse
+      - sxiv
       - stow
       - tmux
       - tree

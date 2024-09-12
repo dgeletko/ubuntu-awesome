@@ -139,9 +139,7 @@
       - pavucontrol
       - pasystray
       - picom
-      - playerctl
       - ranger
-      - sxiv
       - vim
 
 - name: install theme packages
