@@ -34,11 +34,12 @@
   ansible.builtin.apt:
     update_cache: true
 
+# ref: https://packages.ubuntu.com/jammy/ubuntu-desktop-minimal
 - name: install standard ubuntu system packages
   ansible.builtin.apt:
     state: present
     name:
-      # depends
+      # == depends ==
       - alsa-base
       - alsa-utils
       - anacron
@@ -67,7 +68,7 @@
       - xterm
       - zenity
       - zip
-      # recommends
+      # == recommends ==
       - acpi-support
       - bluez
       - cups
@@ -84,14 +85,14 @@
       - libglib2.0-bin
       - libpam-fprintd
       - libpam-gnome-keyring
-      - libpam-sss
+      #- libpam-sss
       - network-manager
       - policykit-desktop-privileges
       - pulseaudio-module-bluetooth
       - xcursor-themes
       - xdg-desktop-portal-gtk
       - xdg-utils
-      # other
+      # == other ==
       - accountsservice
       - dconf-cli
       - desktop-file-utils
@@ -133,7 +134,7 @@
       - fonts-ubuntu
       - lxappearance
       - lxpolkit
-      - network-manager-gnome # note: depends on gnome shell unless policykit auth agent (lxpolkit) and notification daemon installed (awesome, dunst)
+      - network-manager-gnome # note: requires policykit agent (lxpolkit) and notification daemon (awesome, dunst) or gnome-shell installed
       - nitrogen
       - pavucontrol
       - pasystray

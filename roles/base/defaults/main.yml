@@ -8,15 +8,15 @@ repos:
   vscode: true
   flatpak: true
 
+window_managers:
+  awesome: true
+  qtile: true
+
 apps:
   browser: brave-browser
   file_manager: pcmanfm
   launcher: rofi
   terminal: kitty
-
-window_managers:
-  awesome: true
-  qtile: true
 
 theme:
   style:

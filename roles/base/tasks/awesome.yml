@@ -1,6 +1,6 @@
 ---
 
-- name: install awesomewm
+- name: install awesome
   ansible.builtin.apt:
     state: present
     name:
