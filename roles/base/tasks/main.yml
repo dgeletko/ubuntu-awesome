@@ -143,6 +143,11 @@
       - ranger
       - vim
 
+- name: set terminal {{apps.terminal}} as x-terminal-emulator
+  community.general.alternatives:
+    name: x-terminal-emulator
+    path: /usr/bin/{{apps.terminal}}
+
 - name: install theme packages
   ansible.builtin.apt:
     state: present
