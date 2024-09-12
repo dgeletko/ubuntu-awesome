@@ -17,6 +17,9 @@
       - cryptsetup-initramfs
       - dkms
       - ethtool
+      - fdisk
+      - fwupd
+      - fwupd-signed
       - git
       - htop
       - hwdata
