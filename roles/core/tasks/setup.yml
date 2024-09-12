@@ -25,13 +25,20 @@
 
 - name: configure network manager as netplan renderer
   block:
+    - name: find installer netplan config files
+      ansible.builtin.find:
+        paths: /etc/netplan
+        patterns: '*.yaml'
+        excludes: 01-network-manager-all.yaml
+      register: netplan_config
+
     - name: remove installer netplan config
       ansible.builtin.file:
-        path: '{{item}}'
+        path: '{{item.path}}'
         state: absent
-      with_fileglob:
-        - /etc/netplan/*.yaml
-      when: item | basename != '01-network-manager-all.yaml'
+      loop: '{{netplan_config.files}}'
+      loop_control:
+        label: '{{item.path}}'
 
     - name: copy network manager netplan config
       ansible.builtin.copy:
