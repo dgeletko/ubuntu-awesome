@@ -1,5 +1,6 @@
 ---
 
+# ref: https://packages.ubuntu.com/jammy/ubuntu-server
 - name: remove server packages
   ansible.builtin.apt:
     state: absent
@@ -8,6 +9,28 @@
     name:
       - ubuntu-server
       - ubuntu-server-minimal
+      # == depends ==
+      - apport
+      - bcache-tools
+      - btrfs-progs
+      - byobu
+      - cloud-*
+      - mdadm
+      - motd-news-config
+      - multipath-tools
+      - overlayroot
+      - pollinate
+      - screen
+      - sosreport
+      - xfsprogs
+      # == recommends ==
+      - landscape-*
+      - lxd-agent-loader
+      - needrestart
+      - open-iscsi
+      - open-vm-tools
+      # == other ==
+      - popularity-contest
 
 - name: remove server files
   ansible.builtin.file:
@@ -19,7 +42,7 @@
     - /etc/pollinate
     - /etc/vmware-tools
 
-- name: remove snap
+- name: remove snap package support
   block:
     - name: remove snap
       ansible.builtin.apt:
