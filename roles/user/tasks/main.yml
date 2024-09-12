@@ -142,15 +142,6 @@
     cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
 
-- name: add user groups
-  ansible.builtin.user:
-    name: '{{user}}'
-    append: true
-    groups:
-      - dialout
-      - users
-      - wireshark
-      - docker
 
 - name: install nerd fonts
   become_user: '{{user}}'

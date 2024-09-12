@@ -86,3 +86,11 @@
       when: dpkg_add_arch.changed
   when: multiarch.i386
 
+- name: add user to core groups
+  ansible.builtin.user:
+    name: '{{user}}'
+    append: true
+    groups:
+      - dialout
+      - users
+
