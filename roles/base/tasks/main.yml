@@ -132,6 +132,7 @@
       - '{{apps.launcher}}'
       - '{{apps.terminal}}'
       - arandr
+      - blueman
       - fonts-ubuntu
       - lxappearance
       - lxpolkit
