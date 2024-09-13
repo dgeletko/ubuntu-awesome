@@ -38,7 +38,6 @@ either locally or from a remote control host. The following table describes the 
 | base  | Base system w/ standard Ubuntu desktop packages and window managers |
 | user  | Custom user Ubuntu system                                           |
 | vbox  | Specialized for running in Virtualbox or using the Vagrant test VM  |
-Table: Roles
 
 ### Local
 
