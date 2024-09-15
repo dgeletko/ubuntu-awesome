@@ -1,0 +1,77 @@
+---
+
+# ref: https://packages.ubuntu.com/noble/ubuntu-desktop-minimal
+standard_desktop:
+  # == depends ==
+  - alsa-base
+  - alsa-utils
+  - anacron
+  - bc
+  - ca-certificates
+  - dmz-cursor-theme
+  - fontconfig
+  - fonts-dejavu-core
+  - ghostscript
+  - gstreamer1.0-alsa
+  - gstreamer1.0-plugins-base-apps
+  - inputattach
+  - libnotify-bin
+  - libu2f-udev
+  - pipewire
+  - pipewire-pulse
+  - rfkill
+  - ubuntu-drivers-common
+  - unzip
+  - wireless-tools
+  - wireplumber
+  - wpasupplicant
+  - xdg-user-dirs
+  - xdg-user-dirs-gtk
+  - xorg
+  - xterm
+  - zenity
+  - zip
+  # == recommends ==
+  - bluez
+  - cups
+  - dirmngr
+  - fonts-ubuntu
+  - fwupd
+  - fwupd-signed
+  - gamemode
+  - gnome-keyring
+  - gpg-agent
+  - gvfs-fuse
+  - kerneloops
+  - laptop-detect
+  - libglib2.0-bin
+  - libpam-fprintd
+  - libpam-gnome-keyring
+  - libpam-sss
+  - libspa-0.2-bluetooth
+  - network-manager
+  - pcmciautils
+  - policykit-desktop-privileges
+  - xcursor-themes
+  - xdg-desktop-portal-gtk
+  - xdg-utils
+  # == other ==
+  - accountsservice
+  - aspell-en
+  - dconf-cli
+  - desktop-file-utils
+  - gstreamer1.0-pipewire
+  - gstreamer1.0-plugins-good
+  - gstreamer1.0-x
+  - gvfs
+  - gvfs-backends
+  - language-pack-en
+  - pipewire-alsa
+  - pipewire-audio
+  - power-profiles-daemon
+  - switcheroo-control
+  - ubuntu-restricted-addons
+  - unattended-upgrades
+  - webp-pixbuf-loader
+  - xserver-xephyr
+

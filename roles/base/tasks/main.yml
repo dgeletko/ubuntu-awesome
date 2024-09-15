@@ -34,74 +34,13 @@
   ansible.builtin.apt:
     update_cache: true
 
-# ref: https://packages.ubuntu.com/jammy/ubuntu-desktop-minimal
+- name: include ubuntu {{ansible_facts['distribution_version']}} vars
+  ansible.builtin.include_vars: ubuntu_{{ansible_facts['distribution_major_version']}}.yml
+
 - name: install standard ubuntu system packages
   ansible.builtin.apt:
     state: present
-    name:
-      # == depends ==
-      - alsa-base
-      - alsa-utils
-      - anacron
-      - bc
-      - ca-certificates
-      - dmz-cursor-theme
-      - fontconfig
-      - fonts-dejavu-core
-      - fonts-freefont-ttf
-      - ghostscript-x
-      - gstreamer1.0-alsa
-      - gstreamer1.0-plugins-base-apps
-      - gstreamer1.0-pulseaudio
-      - inputattach
-      - libnotify-bin
-      - libu2f-udev
-      - pulseaudio
-      - rfkill
-      - ubuntu-drivers-common
-      - unzip
-      - wireless-tools
-      - wpasupplicant
-      - xdg-user-dirs
-      - xdg-user-dirs-gtk
-      - xorg
-      - xterm
-      - zenity
-      - zip
-      # == recommends ==
-      - acpi-support
-      - bluez
-      - cups
-      - dirmngr
-      - fonts-ubuntu
-      - fwupd
-      - fwupd-signed
-      - gamemode
-      - gnome-keyring
-      - gpg-agent
-      - gvfs-fuse
-      - kerneloops
-      - laptop-detect
-      - libglib2.0-bin
-      - libpam-fprintd
-      - libpam-gnome-keyring
-      #- libpam-sss
-      - network-manager
-      - policykit-desktop-privileges
-      - pulseaudio-module-bluetooth
-      - xcursor-themes
-      - xdg-desktop-portal-gtk
-      - xdg-utils
-      # == other ==
-      - accountsservice
-      - dconf-cli
-      - desktop-file-utils
-      - gvfs
-      - gvfs-backends
-      - language-pack-en
-      - switcheroo-control
-      - ubuntu-restricted-addons
-      - unattended-upgrades
+    name: '{{standard_desktop}}'
 
 - name: install login manager
   ansible.builtin.apt:

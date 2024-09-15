@@ -20,9 +20,11 @@
       - fdisk
       - fwupd
       - fwupd-signed
+      - gdisk
       - git
       - htop
       - hwdata
+      - jq
       - laptop-detect
       - lvm2
       - net-tools
