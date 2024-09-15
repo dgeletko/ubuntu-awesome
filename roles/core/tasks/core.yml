@@ -37,7 +37,6 @@
       - python3-wheel
       - shim-signed
       - sysstat
-      - tlp
       - tmux
       - ubuntu-standard
       - unzip
@@ -68,7 +67,7 @@
     state: present
     name:
       - plymouth
-      - plymouth-theme-ubuntu-logo
+      #- plymouth-theme-ubuntu-logo
       - plymouth-theme-ubuntu-text
       - plymouth-theme-spinner
   notify: update initramfs

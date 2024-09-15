@@ -21,6 +21,7 @@ These scripts were written primarily for Ubuntu LTS Linux distributions. The goa
 releases. The following Ubuntu releases are supported:
 
 * 22.04 (Jammy Jellyfish)
+* 24.04 (Noble Numbat)
 
 In order to run the provisioning scripts, Ansible must be installed as a prerequisite. Ansible can be installed
 via the Python pip package manager (`pip install ansible`) or from the standard Ubuntu repositories
