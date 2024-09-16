@@ -2,17 +2,17 @@
 
 repos:
   brave-browser: true
+  flatpak: true
   google-chrome: true
   mozilla: true
   virtualbox: true
   vscode: true
-  flatpak: true
 
 window_managers:
   awesome: true
   qtile: true
 
-apps:
+pkgs:
   archiver: xarchiver
   browser: brave-browser
   file_manager: pcmanfm

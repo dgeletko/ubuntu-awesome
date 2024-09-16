@@ -1,6 +1,6 @@
 ---
 
-apps:
+pkgs:
   docker: true
   libreoffice: false
   rust: false

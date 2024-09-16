@@ -92,7 +92,7 @@
       - libreoffice-impress
       - libreoffice-style-breeze
       - libreoffice-writer
-  when: apps.libreoffice | bool
+  when: pkgs.libreoffice | bool
 
 - name: install docker
   block:
@@ -110,7 +110,7 @@
         name: '{{user}}'
         groups: docker
         append: true
-  when: apps.docker | bool
+  when: pkgs.docker | bool
 
 - name: install wireshark
   block:
@@ -132,7 +132,7 @@
         name: '{{user}}'
         append: true
         groups: wireshark
-  when: apps.wireshark | bool
+  when: pkgs.wireshark | bool
 
 - name: install virtualbox
   block:
@@ -150,7 +150,7 @@
         groups: vboxsf
   when:
     - ansible_facts['virtualization_role'] != "guest"
-    - apps.virtualbox | bool
+    - pkgs.virtualbox | bool
 
 - name: install vscode
   block:
@@ -167,14 +167,14 @@
       args:
         creates: '~/.vscode/extensions/{{item}}-*'
       loop: '{{vscode_extensions}}'
-  when: apps.vscode | bool
+  when: pkgs.vscode | bool
 
 - name: install latest rust
   become_user: '{{user}}'
   ansible.builtin.shell:
     cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
-  when: apps.rust | bool
+  when: pkgs.rust | bool
 
 - name: install nerd fonts
   become_user: '{{user}}'

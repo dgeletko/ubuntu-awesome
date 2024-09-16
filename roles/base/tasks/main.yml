@@ -65,11 +65,11 @@
   ansible.builtin.apt:
     state: present
     name:
-      - '{{apps.archiver}}'
-      - '{{apps.browser}}'
-      - '{{apps.file_manager}}'
-      - '{{apps.launcher}}'
-      - '{{apps.terminal}}'
+      - '{{pkgs.archiver}}'
+      - '{{pkgs.browser}}'
+      - '{{pkgs.file_manager}}'
+      - '{{pkgs.launcher}}'
+      - '{{pkgs.terminal}}'
       - arandr
       - blueman
       - fonts-ubuntu
