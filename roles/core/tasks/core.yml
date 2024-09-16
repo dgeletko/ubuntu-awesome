@@ -67,7 +67,6 @@
     state: present
     name:
       - plymouth
-      #- plymouth-theme-ubuntu-logo
       - plymouth-theme-ubuntu-text
       - plymouth-theme-spinner
   notify: update initramfs
