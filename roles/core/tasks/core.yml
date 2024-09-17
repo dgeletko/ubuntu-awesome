@@ -26,6 +26,7 @@
       - hwdata
       - jq
       - laptop-detect
+      - libfuse2
       - lvm2
       - net-tools
       - network-manager
