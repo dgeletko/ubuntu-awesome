@@ -10,6 +10,8 @@
     state: present
     name:
       - acl
+      - apparmor
+      - apparmor-utils
       - bzip2
       - cifs-utils
       - cpufrequtils
@@ -40,6 +42,7 @@
       - sysstat
       - tmux
       - ubuntu-standard
+      - ufw
       - unzip
       - vim
       - xz-utils

@@ -1,11 +1,11 @@
 ---
 
 - name: cleanup server install
-  import_tasks: cleanup.yml
+  ansible.builtin.import_tasks: cleanup.yml
 
 - name: install core system
-  import_tasks: core.yml
+  ansible.builtin.import_tasks: core.yml
 
 - name: setup core system
-  import_tasks: setup.yml
+  ansible.builtin.import_tasks: setup.yml
 

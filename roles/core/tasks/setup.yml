@@ -66,6 +66,18 @@
     sysctl_file: /etc/sysctl.d/95-custom.conf
   loop: '{{sysctl | dict2items}}'
 
+- name: configure firewall
+  block:
+    - name: allow ssh firewall rule
+      community.general.ufw:
+        name: OpenSSH
+        rule: allow
+
+    - name: enable firewall
+      community.general.ufw:
+        state: enabled
+        default: deny
+
 - name: add i386 multiarch support
   block:
     - name: get current foreign architectures
