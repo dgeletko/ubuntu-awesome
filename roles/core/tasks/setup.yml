@@ -29,7 +29,7 @@
       ansible.builtin.find:
         paths: /etc/netplan
         patterns: '*.yaml'
-        excludes: 01-network-manager-all.yaml
+        excludes: 00-network-manager-all.yaml
       register: netplan_config
 
     - name: remove installer netplan config
@@ -42,7 +42,7 @@
 
     - name: copy network manager netplan config
       ansible.builtin.copy:
-        src: files/etc/netplan/01-network-manager-all.yaml
+        src: files/etc/netplan/00-network-manager-all.yaml
         dest: /etc/netplan
         mode: 0600
 
