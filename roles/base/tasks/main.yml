@@ -4,7 +4,7 @@
   vars:
     keyring: /usr/share/keyrings
   block:
-    - name: add repo key
+    - name: add apt repo key
       ansible.builtin.get_url:
         url: '{{item.key.url}}'
         dest: '{{keyring}}/{{item.key.dest}}'
@@ -13,7 +13,7 @@
         label: '{{item.name}}'
       when: repos[item.name] | bool
 
-    - name: add repo
+    - name: add apt repo
       ansible.builtin.apt_repository:
         repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
         state: present
@@ -37,21 +37,10 @@
 - name: include ubuntu {{ansible_facts['distribution_version']}} vars
   ansible.builtin.include_vars: ubuntu_{{ansible_facts['distribution_major_version']}}.yml
 
-- name: install standard ubuntu system packages
+- name: install standard ubuntu desktop base system packages
   ansible.builtin.apt:
     state: present
-    name: '{{standard_desktop}}'
-
-- name: install login manager
-  ansible.builtin.apt:
-    state: present
-    name:
-      - lightdm
-      - lightdm-settings
-      - light-locker
-      - light-locker-settings
-      - slick-greeter
-  notify: restart lightdm
+    name: '{{pkgs_desktop_base}}'
 
 - name: install awesome window manager
   ansible.builtin.import_tasks: awesome.yml
@@ -61,32 +50,29 @@
   ansible.builtin.import_tasks: qtile.yml
   when: window_managers.qtile | bool
 
-- name: install standard support software
+- name: install login manager
+  block:
+    - name: install login manager
+      ansible.builtin.apt:
+        state: present
+        name:
+          - lightdm
+          - lightdm-settings
+          - light-locker
+          - light-locker-settings
+          - slick-greeter
+      notify: restart lightdm
+
+    - name: configure greeter
+      ansible.builtin.template:
+        src: templates/etc/lightdm/slick-greeter.conf.j2
+        dest: /etc/lightdm/slick-greeter.conf
+        mode: 0644
+
+- name: install base desktop packages
   ansible.builtin.apt:
     state: present
-    name:
-      - '{{pkgs.archiver}}'
-      - '{{pkgs.browser}}'
-      - '{{pkgs.file_manager}}'
-      - '{{pkgs.launcher}}'
-      - '{{pkgs.terminal}}'
-      - arandr
-      - blueman
-      - fonts-ubuntu
-      - lxappearance
-      - lxpolkit
-      - network-manager-gnome # note: requires policykit agent (lxpolkit) and notification daemon (awesome, dunst) or gnome-shell installed
-      - nitrogen
-      - pavucontrol
-      - pasystray
-      - picom
-      - ranger
-      - vim
-
-- name: set {{apps.terminal}} as x-terminal-emulator
-  community.general.alternatives:
-    name: x-terminal-emulator
-    path: /usr/bin/{{apps.terminal}}
+    name: '{{pkgs_desktop | flatten | select}}'
 
 - name: install theme packages
   ansible.builtin.apt:
@@ -96,11 +82,11 @@
       - '{{theme.icon.pkg}}'
       - '{{theme.font.pkg}}'
       - gtk2-engines
-      - qt5ct
-      - qt5-gtk-platformtheme
-      - qt5-gtk2-platformtheme
-      - qt5-style-plugins
-      - qt6-gtk-platformtheme
+      #- qt5ct
+      #- qt5-gtk-platformtheme
+      #- qt5-gtk2-platformtheme
+      #- qt5-style-plugins
+      #- qt6-gtk-platformtheme
       - ubuntu-wallpapers
 
 - name: configure theme

@@ -31,3 +31,21 @@ apt_repos:
       url: https://packages.microsoft.com/keys/microsoft.asc
       dest: microsoft.asc
 
+pkgs_desktop:
+  - '{{pkgs.archiver | default()}}'
+  - '{{pkgs.browser | default()}}'
+  - '{{pkgs.editor | default()}}'
+  - '{{pkgs.file_manager | default()}}'
+  - '{{pkgs.launcher | default()}}'
+  - '{{pkgs.terminal | default()}}'
+  - arandr
+  - blueman
+  - fonts-ubuntu
+  - lxappearance
+  - lxpolkit
+  - network-manager-gnome # note: requires policykit agent (lxpolkit) and notification daemon (awesome, dunst) or gnome-shell installed
+  - nitrogen
+  - pavucontrol
+  - pasystray
+  - picom
+

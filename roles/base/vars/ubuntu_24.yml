@@ -1,7 +1,7 @@
 ---
 
 # ref: https://packages.ubuntu.com/noble/ubuntu-desktop-minimal
-standard_desktop:
+pkgs_desktop_base:
   # == depends ==
   - alsa-base
   - alsa-utils

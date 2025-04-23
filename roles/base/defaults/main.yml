@@ -15,9 +15,10 @@ window_managers:
 pkgs:
   archiver: xarchiver
   browser: brave-browser
-  file_manager: pcmanfm
+  editor: vim
+  file_manager: [pcmanfm, ranger]
   launcher: rofi
-  terminal: kitty
+  terminal: [kitty, xterm]
 
 theme:
   style:
@@ -29,4 +30,15 @@ theme:
   font:
     name: Ubuntu 10
     pkg: fonts-ubuntu
+
+#theme:
+#  style:
+#    name: Yaru-Dark
+#    pkg: yaru-theme-gtk
+#  icon:
+#    name: Yaru-Dark
+#    pkg: yaru-theme-icon
+#  font:
+#    name: Ubuntu 10
+#    pkg: fonts-ubuntu
 
