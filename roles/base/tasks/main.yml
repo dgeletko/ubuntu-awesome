@@ -61,15 +61,15 @@
           - light-locker
           - light-locker-settings
           - slick-greeter
-      notify: restart lightdm
 
     - name: configure greeter
       ansible.builtin.template:
         src: templates/etc/lightdm/slick-greeter.conf.j2
         dest: /etc/lightdm/slick-greeter.conf
         mode: 0644
+  notify: restart lightdm
 
-- name: install base desktop packages
+- name: install desktop packages
   ansible.builtin.apt:
     state: present
     name: '{{pkgs_desktop | flatten | select}}'
