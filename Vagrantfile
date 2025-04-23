@@ -23,7 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "ansible_local" do |ansible|
         ansible.inventory_path = "hosts"
         ansible.limit = "localhost"
-        ansible.playbook = "ubuntu.yml"
+        ansible.playbook = "standard.yml"
         ansible.extra_vars = {
             user: "ubuntu",
             vagrant: true
