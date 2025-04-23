@@ -13,7 +13,7 @@ window_managers:
   awesome: true
   qtile: true
 
-pkgs:
+pkg_select:
   archiver: xarchiver
   browser: brave-browser
   editor: vim

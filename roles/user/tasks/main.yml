@@ -1,47 +1,16 @@
 ---
 
-- name: install dev tools
-  ansible.builtin.apt:
-    state: present
-    name:
-      - build-essential
-      - cmake
-      - cppcheck
-      - curl
-      - dos2unix
-      - gdb-multiarch
-      - git
-      - git-gui
-      - git-lfs
-      - gitk
-      - lcov
-      - make
-      - patch
-      - pipenv
-      - pkg-config
-      - python3-pip
-      - python3-setuptools
-      - python3-venv
-      - python3-wheel
-      - valgrind
-      - wget
-
-- name: install dev tools (no recommends)
-  ansible.builtin.apt:
-    state: present
-    name:
-      - vagrant
-
 - name: install utils
   ansible.builtin.apt:
     state: present
     name:
       - autojump
       - bat
+      - fd-find
       - fzf
       - htop
       - jq
-      - netcat
+      - netcat-openbsd
       - pdfgrep
       - pipx
       - playerctl
@@ -58,41 +27,39 @@
       - vim
       - vit
 
-- name: install desktop packages
+- name: install user desktop packages
   ansible.builtin.apt:
     state: present
-    name:
-      - celluloid # video (alt: mpv, parole)
-      - cmus # audio (alt: rhythmbox, audacious, lxmusic, lollypop, moc)
-      - deja-dup # backup (alt: borg)
-      - font-manager # fonts
-      - ghex
-      - gimp
-      - gnome-disk-utility # disk (alt: gparted)
-      - gpick # color picker
-      - gpicview # image (alt: ristretto, eom, sxiv)
-      - gtkterm
-      - keepassxc # password manager
-      - maim # screenshot (alt: flameshot, scrot)
-      - mate-calc # calculator (alt: galculator)
-      - meld
-      - mousepad # editor (alt: pluma, gedit)
-      - ncdu # disk usage (alt: baobab, ducs)
-      - seahorse # gpg front end
-      - usb-creator-gtk
-      - zathura # doc viewer (alt: atril, evince)
+    name: '{{pkgs_desktop_user | flatten | select}}'
 
-- name: install libreoffice
-  ansible.builtin.apt:
-    state: present
-    name:
-      - libreoffice-calc
-      - libreoffice-gtk3
-      - libreoffice-help-en-us
-      - libreoffice-impress
-      - libreoffice-style-breeze
-      - libreoffice-writer
-  when: pkgs.libreoffice | bool
+- name: install dev tools
+  block:
+    - name: install dev tools
+      ansible.builtin.apt:
+        state: present
+        name:
+          - build-essential
+          - cmake
+          - cppcheck
+          - curl
+          - dos2unix
+          - gdb-multiarch
+          - git
+          - git-gui
+          - git-lfs
+          - gitk
+          - lcov
+          - make
+          - patch
+          - pipenv
+          - pkg-config
+          - python3-pip
+          - python3-setuptools
+          - python3-venv
+          - python3-wheel
+          - valgrind
+          - wget
+  when: pkg_enable.devtools | bool
 
 - name: install docker
   block:
@@ -110,7 +77,19 @@
         name: '{{user}}'
         groups: docker
         append: true
-  when: pkgs.docker | bool
+  when: pkg_enable.docker | bool
+
+- name: install libreoffice
+  ansible.builtin.apt:
+    state: present
+    name:
+      - libreoffice-calc
+      - libreoffice-gtk3
+      - libreoffice-help-en-us
+      - libreoffice-impress
+      - libreoffice-style-breeze
+      - libreoffice-writer
+  when: pkg_enable.libreoffice | bool
 
 - name: install wireshark
   block:
@@ -132,7 +111,7 @@
         name: '{{user}}'
         append: true
         groups: wireshark
-  when: pkgs.wireshark | bool
+  when: pkg_enable.wireshark | bool
 
 - name: install virtualbox
   block:
@@ -141,7 +120,7 @@
         state: present
         name:
           - libsdl-ttf2.0-0
-          - virtualbox-7.0
+          - virtualbox-7.1
 
     - name: add user to vboxsf group
       ansible.builtin.user:
@@ -150,7 +129,7 @@
         groups: vboxsf
   when:
     - ansible_facts['virtualization_role'] != "guest"
-    - pkgs.virtualbox | bool
+    - pkg_enable.virtualbox | bool
 
 - name: install vscode
   block:
@@ -167,14 +146,59 @@
       args:
         creates: '~/.vscode/extensions/{{item}}-*'
       loop: '{{vscode_extensions}}'
-  when: pkgs.vscode | bool
+  when: pkg_enable.vscode | bool
 
 - name: install latest rust
   become_user: '{{user}}'
   ansible.builtin.shell:
     cmd: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     creates: ~/.cargo/bin/rustc
-  when: pkgs.rust | bool
+  when: pkg_enable.rust | bool
+
+- name: install neovim
+  block:
+    - name: install neovim appimage
+      ansible.builtin.get_url:
+        url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+        dest: /opt/nvim.appimage
+        checksum: sha256:https://github.com/neovim/neovim/releases/latest/download/shasum.txt
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: create neovim symlink
+      ansible.builtin.file:
+        src: /opt/nvim.appimage
+        dest: /usr/local/bin/nvim
+        state: link
+  when: pkg_enable.neovim | bool
+
+- name: install lazygit
+  block:
+    - name: create lazygit install directory
+      ansible.builtin.file:
+        path: /opt/lazygit
+        state: directory
+
+    - name: get latest lazygit version
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
+        return_content: true
+      register: lazygit
+
+    - name: install lazygit
+      ansible.builtin.unarchive:
+        src: https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{lazygit.json.tag_name | trim('v')}}_Linux_x86_64.tar.gz
+        dest: /opt/lazygit
+        creates: /opt/lazygit/lazygit
+        remote_src: true
+
+    - name: create lazygit symlink
+      ansible.builtin.file:
+        src: /opt/lazygit/lazygit
+        dest: /usr/local/bin/lazygit
+        state: link
+  when: pkg_enable.lazygit | bool
 
 - name: install nerd fonts
   become_user: '{{user}}'

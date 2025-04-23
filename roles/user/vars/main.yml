@@ -1,0 +1,12 @@
+---
+
+pkgs_desktop_user:
+  - '{{pkg_select.audio | default()}}'
+  - '{{pkg_select.video | default()}}'
+  - '{{pkg_select.image | default()}}'
+  - '{{pkg_select.editor | default()}}'
+  - '{{pkg_select.office | default()}}'
+  - '{{pkg_select.backup | default()}}'
+  - '{{pkg_select.calc | default()}}'
+  - '{{pkg_select.utils | default()}}'
+

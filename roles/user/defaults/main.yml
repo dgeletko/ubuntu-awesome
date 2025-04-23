@@ -1,12 +1,40 @@
 ---
 
-pkgs:
+pkg_enable:
+  devtools: true
   docker: true
+  lazygit: true
   libreoffice: false
+  neovim: true
   rust: false
   virtualbox: true
   vscode: false
   wireshark: false
+
+pkg_select:
+  audio: cmus # audacious, cmus, lollypop, lxmusic, moc, rhythmbox
+  video: celluloid # celluloid, mpv, parole
+  image: # eom, gimp, gpicview, ristretto, sxiv
+    - gimp
+    - gpicview
+    - sxiv
+  editor: # gedit, mousepad, pluma, vim
+    - mousepad
+    - vim
+  office: zathura # atril, evince, libreoffice, zathura
+  backup: deja-dup # borgbackup, deja-dup, timeshift
+  calc: mate-calc # galculator, mate-calc
+  utils:
+    - font-manager
+    - ghex
+    - gnome-disk-utility # gparted
+    - gpick
+    - gtkterm
+    - keepassxc
+    - maim # flameshot, maim, scrot
+    - meld
+    - ncdu # baobab, ducs, dcdu
+    - usb-creator-gtk
 
 # ref: https://marketplace.visualstudio.com/vscode
 vscode_extensions:
@@ -16,7 +44,6 @@ vscode_extensions:
   - ms-vscode-remote.remote-containers
   - ms-vscode.hexeditor
   - ms-python.python
-  - ms-python.debugpy
   - ms-azuretools.vscode-docker
   - rust-lang.rust-analyzer
   - redhat.ansible

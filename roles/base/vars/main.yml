@@ -38,12 +38,12 @@ apt_repos:
       dest: microsoft.asc
 
 pkgs_desktop:
-  - '{{pkgs.archiver | default()}}'
-  - '{{pkgs.browser | default()}}'
-  - '{{pkgs.editor | default()}}'
-  - '{{pkgs.file_manager | default()}}'
-  - '{{pkgs.launcher | default()}}'
-  - '{{pkgs.terminal | default()}}'
+  - '{{pkg_select.archiver | default()}}'
+  - '{{pkg_select.browser | default()}}'
+  - '{{pkg_select.editor | default()}}'
+  - '{{pkg_select.file_manager | default()}}'
+  - '{{pkg_select.launcher | default()}}'
+  - '{{pkg_select.terminal | default()}}'
   - arandr
   - blueman
   - fonts-ubuntu
