@@ -5,6 +5,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "bento/ubuntu-22.04"
+    #config.vm.box = "bento/ubuntu-24.04"
     config.vm.provider "virtualbox" do |vbox|
         vbox.name = "ubuntu_awesome"
         vbox.gui = true
