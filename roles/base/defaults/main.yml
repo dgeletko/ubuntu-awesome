@@ -4,6 +4,7 @@ repos:
   brave-browser: true
   flatpak: true
   google-chrome: true
+  hashicorp: true
   mozilla: true
   virtualbox: true
   vscode: true

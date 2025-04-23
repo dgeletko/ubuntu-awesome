@@ -13,6 +13,12 @@ apt_repos:
       url: https://dl.google.com/linux/linux_signing_key.pub
       dest: google.asc
 
+  - name: hashicorp
+    repo: https://apt.releases.hashicorp.com {{ansible_facts['distribution_release']}} main
+    key:
+      url: https://apt.releases.hashicorp.com/gpg
+      dest: hashicorp-archive-keyring.asc
+
   - name: mozilla
     repo: https://packages.mozilla.org/apt mozilla main
     key:
