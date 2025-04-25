@@ -262,5 +262,6 @@
       register: stow
       changed_when: "'LINK:' in stow.stderr"
       loop: '{{dotfiles.pkgs}}'
+  when: dotfiles is defined
   tags: dotfiles
 
