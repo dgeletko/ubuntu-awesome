@@ -217,7 +217,8 @@
       ansible.builtin.unarchive:
         src: https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{item.pkg}}.zip
         dest: '{{fonts_dir}}/{{item.name}}'
-        creates: '{{fonts_dir}}/{{item.name}}/*.ttf'
+        #creates: '{{fonts_dir}}/{{item.name}}/*.ttf'
+        creates: '{{fonts_dir}}/{{item.name}}'
         remote_src: true
       loop: '{{nerd_fonts}}'
       loop_control:
