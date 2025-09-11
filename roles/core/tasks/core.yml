@@ -73,5 +73,6 @@
       - plymouth
       - plymouth-theme-ubuntu-text
       - plymouth-theme-spinner
+      - plymouth-x11
   notify: update initramfs
 
