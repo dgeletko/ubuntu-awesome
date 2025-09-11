@@ -120,7 +120,7 @@
         state: present
         name:
           - libsdl-ttf2.0-0
-          - virtualbox-7.1
+          - virtualbox-7.2
 
     - name: add user to vboxsf group
       ansible.builtin.user:
