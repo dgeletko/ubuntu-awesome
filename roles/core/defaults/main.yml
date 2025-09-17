@@ -5,6 +5,8 @@ repos:
 
 timezone: America/New_York
 
+sshd: true
+
 sysctl:
   vm.swappiness: 10
 

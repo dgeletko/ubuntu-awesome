@@ -49,6 +49,21 @@
       - zerofree
       - zip
 
+- name: install ssh server
+  block:
+    - name: install ssh server
+      ansible.builtin.apt:
+        state: present
+        name:
+          - openssh-server
+
+    - name: enable sshd services
+      ansible.builtin.systemd:
+        name: sshd
+        enabled: true
+        state: started
+  when: sshd | bool
+
 - name: install core system packages (no recommends)
   ansible.builtin.apt:
     state: present
