@@ -3,13 +3,40 @@
 - name: install qtile
   ansible.builtin.pip:
     state: present
-    name: qtile
+    name:
+      - psutil
+      - qtile
     virtualenv: /opt/qtile
     virtualenv_command: python3 -m venv
+
+- name: create xsessions directory
+  ansible.builtin.file:
+    path: /usr/share/xsessions
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: install qtile xsession launcher
   ansible.builtin.copy:
     src: files/usr/share/xsessions/qtile.desktop
     dest: /usr/share/xsessions
     mode: '0644'
+
+- name: install qtile as alternative window manager
+  community.general.alternatives:
+    name: x-window-manager
+    link: /usr/bin/x-window-manager
+    path: /opt/qtile/bin/qtile
+    priority: 90
+    state: auto
+
+- name: set qtile as default session
+  community.general.ini_file:
+    path: /home/{{user}}/.dmrc
+    section: Desktop
+    option: Session
+    value: qtile
+    state: present
+    no_extra_spaces: true
 
