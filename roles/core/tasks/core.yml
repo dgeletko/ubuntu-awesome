@@ -18,6 +18,7 @@
       - cryptsetup
       - cryptsetup-initramfs
       - dkms
+      - eatmydata
       - ethtool
       - fdisk
       - fwupd
