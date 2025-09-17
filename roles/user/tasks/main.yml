@@ -122,11 +122,11 @@
           - libsdl-ttf2.0-0
           - virtualbox-7.2
 
-    - name: add user to vboxsf group
+    - name: add user to vboxusers group
       ansible.builtin.user:
         name: '{{user}}'
         append: true
-        groups: vboxsf
+        groups: vboxusers
   when:
     - ansible_facts['virtualization_role'] != "guest"
     - pkg_enable.virtualbox | bool
