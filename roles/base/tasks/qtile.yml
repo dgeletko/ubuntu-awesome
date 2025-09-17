@@ -33,9 +33,9 @@
 
 - name: set qtile as default session
   community.general.ini_file:
-    path: /home/{{user}}/.dmrc
-    section: Desktop
-    option: Session
+    path: /var/lib/AccountsService/users/{{user}}
+    section: User
+    option: XSession
     value: qtile
     state: present
     no_extra_spaces: true
