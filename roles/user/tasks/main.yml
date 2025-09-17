@@ -157,18 +157,16 @@
 
 - name: install neovim
   block:
-    - name: install neovim appimage
-      ansible.builtin.get_url:
-        url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-        dest: /opt/nvim.appimage
-        checksum: sha256:https://github.com/neovim/neovim/releases/latest/download/shasum.txt
-        owner: root
-        group: root
-        mode: 0755
+    - name: install neovim
+      ansible.builtin.unarchive:
+        url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+        dest: /opt
+        creates: /opt/nvim-linux-x86_64
+        remote_src: true
 
     - name: create neovim symlink
       ansible.builtin.file:
-        src: /opt/nvim.appimage
+        src: /opt/nvim-linux-x86_64/bin/nvim
         dest: /usr/local/bin/nvim
         state: link
   when: pkg_enable.neovim | bool
