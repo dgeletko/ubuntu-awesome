@@ -47,12 +47,12 @@
         mode: 0600
 
     - name: disable systemd network daemon
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: systemd-networkd
         enabled: false
 
     - name: enable network manager daemon
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: NetworkManager
         enabled: true
 
