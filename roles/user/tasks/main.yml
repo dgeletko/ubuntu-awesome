@@ -171,6 +171,33 @@
         state: link
   when: pkg_enable.neovim | bool
 
+- name: install lazydocker
+  block:
+    - name: create lazydocker install directory
+      ansible.builtin.file:
+        path: /opt/lazydocker
+        state: directory
+
+    - name: get latest lazydocker version
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/jesseduffield/lazydocker/releases/latest
+        return_content: true
+      register: lazydocker
+
+    - name: install lazydocker
+      ansible.builtin.unarchive:
+        src: https://github.com/jesseduffield/lazydocker/releases/latest/download/lazydocker_{{lazydocker.json.tag_name | trim('v')}}_Linux_x86_64.tar.gz
+        dest: /opt/lazydocker
+        creates: /opt/lazydocker/lazydocker
+        remote_src: true
+
+    - name: create lazydocker symlink
+      ansible.builtin.file:
+        src: /opt/lazydocker/lazydocker
+        dest: /usr/local/bin/lazydocker
+        state: link
+  when: pkg_enable.lazydocker | bool
+
 - name: install lazygit
   block:
     - name: create lazygit install directory

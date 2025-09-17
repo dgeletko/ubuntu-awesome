@@ -3,6 +3,7 @@
 pkg_enable:
   devtools: true
   docker: true
+  lazydocker: true
   lazygit: true
   libreoffice: false
   neovim: true
