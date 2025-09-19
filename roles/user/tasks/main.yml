@@ -6,6 +6,7 @@
     name:
       - autojump
       - bat
+      - fail2ban
       - fd-find
       - fzf
       - htop
