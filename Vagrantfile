@@ -7,6 +7,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #config.vm.box = "bento/ubuntu-22.04"
     #config.vm.box = "bento/ubuntu-24.04"
     config.vm.box = "bento/ubuntu-26.04"
+    config.vm.hostname = "ubuntu-awesome-vm"
 
     config.vm.provider :virtualbox do |vbox|
         vbox.name = "ubuntu-awesome"
@@ -39,7 +40,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ansible.playbook = "standard.yml"
         ansible.extra_vars = {
             user: "ubuntu",
-            vagrant: true
         }
         #ansible.tags = ["user"]
         ansible.skip_tags = []

@@ -12,12 +12,10 @@
       default: "{{lookup('ansible.builtin.env', 'USER') | default('nobody', True)}}"
 
   roles:
-    - role: vbox
-      tags: vbox
+    - role: vm
+      tags: vm
       when:
         - ansible_facts['virtualization_role'] == "guest"
-        - ansible_facts['virtualization_type'] == "virtualbox"
-        - vagrant | default(false) | bool
     - role: core
       tags: core
     - role: base

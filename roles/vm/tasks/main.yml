@@ -1,0 +1,39 @@
+---
+
+- name: add user {{user}}
+  ansible.builtin.user:
+    state: present
+    name: '{{user}}'
+    password: $6$1.HPVgwdkk/uh6xy$1b1ySWAtttFweMEWu9ir6ngxMkI0dVm2de8EHnjJcBBN2PRLmcPvlNaRJh.psOxV.5IxRWZCZR0A2Gx..e5Yc/
+    groups: [sudo]
+    append: true
+    create_home: true
+    shell: /bin/bash
+
+- name: add user {{user}} to vbox shared folder group
+  ansible.builtin.user:
+    name: '{{user}}'
+    groups: [vboxsf]
+    append: true
+  when:
+    - ansible_facts['virtualization_type'] == "virtualbox"
+
+- name: configure vagrant user
+  block:
+    - name: check if vagrant user exists
+      ansible.builtin.getent:
+        database: passwd
+        key: vagrant
+      changed_when: false
+      failed_when: false
+
+    - name: change vagrant user to system account
+      community.general.ini_file:
+        path: /var/lib/AccountsService/users/vagrant
+        section: User
+        option: SystemAccount
+        value: 'true'
+        state: present
+        no_extra_spaces: true
+      when: "'vagrant' in ansible_facts['getent_passwd']"
+
