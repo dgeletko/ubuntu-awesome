@@ -1,7 +1,12 @@
 ---
 
 - name: update initramfs
+  ansible.builtin.command: dracut --force
+  when: ansible_facts['distribution_major_version'] is version('26', '>=')
+
+- name: update initramfs
   ansible.builtin.command: update-initramfs -u
+  when: ansible_facts['distribution_major_version'] is version('26', '<')
 
 - name: update grub
   ansible.builtin.command: update-grub

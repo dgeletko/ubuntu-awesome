@@ -1,0 +1,51 @@
+---
+
+pkgs:
+  common:
+    - acl
+    - apparmor
+    - apparmor-utils
+    - busybox-initramfs
+    - bzip2
+    - cifs-utils
+    - cpufrequtils
+    - cryptsetup
+    - dkms
+    - eatmydata
+    - ethtool
+    - fdisk
+    - fwupd
+    - fwupd-signed
+    - gdisk
+    - git
+    - htop
+    - hwdata
+    - jq
+    - laptop-detect
+    - libfuse2
+    - lvm2
+    - net-tools
+    - network-manager
+    - p7zip-full
+    - python-is-python3
+    - python3-pip
+    - python3-setuptools
+    - python3-venv
+    - python3-wheel
+    - shim-signed
+    - sysstat
+    - tmux
+    - ubuntu-standard
+    - ufw
+    - unzip
+    - vim
+    - xz-utils
+    - zerofree
+    - zip
+  '22.04':
+    - cryptsetup-initramfs
+  '24.04':
+    - cryptsetup-initramfs
+  '26.04':
+    - initramfs-tools-core
+

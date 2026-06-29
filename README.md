@@ -20,8 +20,9 @@ can be used as a reference on <https://packages.ubuntu.com>.
 These scripts were written primarily for Ubuntu LTS Linux distributions. The goal is to support the 2 latest LTS
 releases. The following Ubuntu releases are supported:
 
-* 22.04 (Jammy Jellyfish)
+* 26.04 (Resolute Raccoon)
 * 24.04 (Noble Numbat)
+* 22.04 (Jammy Jellyfish)
 
 In order to run the provisioning scripts, Ansible must be installed as a prerequisite. Ansible can be installed
 via the Python pip package manager (`pip install ansible`) or from the standard Ubuntu repositories

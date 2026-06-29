@@ -8,47 +8,7 @@
 - name: install core system packages
   ansible.builtin.apt:
     state: present
-    name:
-      - acl
-      - apparmor
-      - apparmor-utils
-      - bzip2
-      - cifs-utils
-      - cpufrequtils
-      - cryptsetup
-      - cryptsetup-initramfs
-      - dkms
-      - eatmydata
-      - ethtool
-      - fdisk
-      - fwupd
-      - fwupd-signed
-      - gdisk
-      - git
-      - htop
-      - hwdata
-      - jq
-      - laptop-detect
-      - libfuse2
-      - lvm2
-      - net-tools
-      - network-manager
-      - p7zip-full
-      - python-is-python3
-      - python3-pip
-      - python3-setuptools
-      - python3-venv
-      - python3-wheel
-      - shim-signed
-      - sysstat
-      - tmux
-      - ubuntu-standard
-      - ufw
-      - unzip
-      - vim
-      - xz-utils
-      - zerofree
-      - zip
+    name: "{{pkgs.common + pkgs[ansible_facts['distribution_version']]}}"
 
 - name: install ssh server
   block:
@@ -70,8 +30,8 @@
     state: present
     install_recommends: false
     name:
+      - "{{'neofetch' if ansible_facts['distribution_major_version'] is version('26', '<') else 'fastfetch'}}"
       - inxi
-      - neofetch
       - pipx
 
 - name: add snap support

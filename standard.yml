@@ -37,8 +37,9 @@
           ansible.builtin.assert:
             that:
               - ansible_facts['distribution'] == "Ubuntu"
-              - (ansible_facts['distribution_major_version'] is version('22', '==')) or
-                (ansible_facts['distribution_major_version'] is version('24', '=='))
+              - (ansible_facts['distribution_major_version'] is version('26', '==')) or
+                (ansible_facts['distribution_major_version'] is version('24', '==')) or
+                (ansible_facts['distribution_major_version'] is version('22', '=='))
             fail_msg: "unsupported os: {{ansible_facts['distribution']}} {{ansible_facts['distribution_version']}}"
 
         - name: check architecture

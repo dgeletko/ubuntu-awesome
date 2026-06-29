@@ -50,7 +50,7 @@ pkgs_desktop:
   - lxappearance
   - lxpolkit
   - network-manager-gnome # note: requires policykit agent (lxpolkit) and notification daemon (awesome, dunst) or gnome-shell installed
-  - nitrogen
+  - "{{'nitrogen' if ansible_facts['distribution_major_version'] is version('26', '<') else 'feh'}}"
   - pavucontrol
   - pasystray
   - picom
