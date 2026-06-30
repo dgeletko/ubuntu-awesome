@@ -61,12 +61,15 @@ which will automatically clone the repo.
   $ ansible-pull --url https://github.com/dgeletko/ubuntu-awesome -i hosts -K standard.yml
   ```
 
+> **NOTE:** The Ubuntu 26.04 sudo replacement (sudo.rs) currently does not work in Ansible. As a workaround,
+add the following to the provisioning command: `-e "ansible_become_exe=/usr/bin/sudo.ws"`)
+
 ### Remote
 
 If provisioning from a remote control host, it is assumed that SSH is properly configured for key login.
 
 ```bash
-$ ansible-playbook -i <host>, -K standard.yml
+$ ansible -i <host>, -K standard.yml
 ```
 
 > **NOTE:** The comma is required after the host/IP
