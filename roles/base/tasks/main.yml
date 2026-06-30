@@ -1,23 +1,17 @@
 ---
 
 - name: add additional apt repos
-  vars:
-    keyring: /usr/share/keyrings
   block:
-    - name: add apt repo key
-      ansible.builtin.get_url:
-        url: '{{item.key.url}}'
-        dest: '{{keyring}}/{{item.key.dest}}'
-      loop: '{{apt_repos}}'
-      loop_control:
-        label: '{{item.name}}'
-      when: repos[item.name] | bool
-
     - name: add apt repo
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64 signed-by={{keyring}}/{{item.key.dest}}] {{item.repo}}
+      ansible.builtin.deb822_repository:
         state: present
-        filename: '{{item.name}}'
+        name: '{{item.name}}'
+        uris: '{{item.url}}'
+        suites: '{{item.suite}}'
+        components: '{{item.component}}'
+        architectures: amd64
+        signed_by: '{{item.key}}'
+        enabled: true
       loop: '{{apt_repos}}'
       loop_control:
         label: '{{item.name}}'
